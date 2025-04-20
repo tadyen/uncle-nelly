@@ -1,0 +1,30 @@
+---
+BaseTypePrice:  # <Base>:<Base Price>
+  Weed: 45
+  Meth: 70
+  Cocaine: 150
+BaseIngredients:
+  "OG Kush":
+    Type: Weed
+    Effect: 
+      - Calming
+      - Energizing
+  "Sour Diesel":
+    Type: Weed
+    Effect:
+      - Refreshing
+  "Green Crack":
+    Type: Weed
+    Effect:
+      - Energizing
+  "Granddaddy Purple":
+    Type: Weed
+    Effect:
+      - Sedating
+  "Meth":
+    Type: Meth
+    Effect: []
+  "Cocaine":
+    Type: Cocaine
+    Effect: []
+
