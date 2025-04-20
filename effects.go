@@ -1,3 +1,41 @@
+package main
+
+import (
+    "gopkg.in/yaml.v3"
+)
+
+// Data stored as YAML string instead of a .yaml in order to hardcode and build it as wasm
+
+type EffectsYAML map[string]struct{
+    Multiplier float64 `yaml:"Multiplier"`
+    Conversion []map[string]string `yaml:"Conversion"`
+}
+type Effect struct {
+    Name string
+    Multiplier float64
+    Conversion []map[string]string
+}
+
+type EffectsTable map[string]Effect
+
+func GetEffectsTable() EffectsTable{
+    effects_yaml := EffectsYAML{}
+    err := yaml.Unmarshal([]byte(EffectsRawYAML), &effects_yaml)
+    if err != nil {
+        panic(err)
+    }
+    table := EffectsTable{}
+    for name, effect := range effects_yaml {
+        table[name] = Effect{
+            Name: name,
+            Multiplier: effect.Multiplier,
+            Conversion: effect.Conversion,
+        }
+    }
+    return table
+}
+
+var EffectsRawYAML = `
 # Kush cooking effects table
 # https://docs.google.com/spreadsheets/d/1Swo-SuDGqPy5hSvRVM-Moix8RjlqQkql0nl1_8CREUM/edit?usp=sharing
 ---
@@ -6,6 +44,9 @@
 #   Multiplier: <number>
 #   Conversion:
 #     - <mixed with>: <result>
+None: 
+  Multiplier: 0.00
+  Conversion: []
 Energizing:
   Multiplier: 0.22
   Conversion:
@@ -221,3 +262,4 @@ Shrinking:
     - Foggy:            Electrifying
     - Spicy:            Refreshing
     - Bright-Eyed:      Munchies
+`
