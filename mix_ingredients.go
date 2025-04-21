@@ -1,7 +1,6 @@
 package main
 
 import (
-    "errors"
     "fmt"
 
     "gopkg.in/yaml.v3"
@@ -12,11 +11,11 @@ import (
 
 var MixIngredientsLookup = GetMixIngredientsTable()
 type MixIngredientName string
-func (m MixIngredientName) MixIngredientName() (MixIngredientName, error) {
+func (m MixIngredientName) Valid() MixIngredientName {
     if _, ok := MixIngredientsLookup[string(m)]; ok{
-        return m, nil
+        return m
     }else{
-        return "", errors.New(fmt.Sprintf("Mix ingredients %s not found", m))
+        panic(fmt.Sprintf("Mix ingredients %s not found", m))
     }
 }
 

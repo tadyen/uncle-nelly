@@ -1,7 +1,6 @@
 package main
 
 import (
-    "errors"
     "fmt"
 
     "gopkg.in/yaml.v3"
@@ -11,11 +10,11 @@ import (
 
 var EffectsLookup = GetEffectsTable()
 type EffectName string
-func (e EffectName) EffectName() (EffectName, error) {
+func (e EffectName) Valid() EffectName {
     if _, ok := EffectsLookup[string(e)]; ok{
-        return e, nil
+        return e
     }else{
-        return "", errors.New(fmt.Sprintf("Effect %s not found", e))
+        panic(fmt.Sprintf("Effect %s not found", e))
     }
 }
 
@@ -35,7 +34,7 @@ type EffectRef struct {
     Name EffectName
 }
 func (e EffectRef) Lookup() Effect {
-    return EffectsLookup[string(e.Name)]
+    return EffectsLookup[string(e.Name.Valid())]
 }
 func (e *EffectRef) MutateWith(effect EffectName){
     conversion := e.Lookup().Conversion

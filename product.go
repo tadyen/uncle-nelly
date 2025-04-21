@@ -14,8 +14,9 @@ type Product struct {
 func EffectSet(erefs []EffectRef) map[EffectName]EffectRef {
     effectSet := make(map[EffectName]EffectRef)
     for _, eref := range erefs {
-        if eref.Name != NoEffect {
-            effectSet[eref.Name] = eref}
+        if eref.Name.Valid() != NoEffect {
+            effectSet[eref.Name] = eref
+        }
     }
     return effectSet
 }
@@ -28,20 +29,23 @@ func (p *Product) Initialize(baseIngredient BaseIngredientRef){
     for i := range len(p.Effects){
         p.Effects[i] = EffectRef{NoEffect}
     }
-    for i, effect := range BaseIngredientsLookup[string(baseIngredient.Name)].Effect {
-        p.Effects[i] = EffectRef{EffectName(effect)}
+    for i, effect := range baseIngredient.Lookup().Effect {
+        p.Effects[i] = EffectRef{EffectName(effect).Valid()}
     }
 }
 
 func (p *Product) QueueIngredients(ingredients []MixIngredientName){
     p.MixQueue = append(p.MixQueue, ingredients...)
+    for _, val := range p.MixQueue{
+        val.Valid()
+    }
     return
 }
 
 func (p *Product) AddEffect(newEffect EffectName){
     for i, e := range p.Effects {
-        if e.Name == NoEffect {
-            p.Effects[i] = EffectRef{newEffect}
+        if e.Name.Valid() == NoEffect {
+            p.Effects[i] = EffectRef{newEffect.Valid()}
             break
         }
     }

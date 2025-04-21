@@ -5,8 +5,8 @@ import (
 )
 
 func main(){
-    fmt.Printf("asdf")
-
+    e := EffectName("Fogga").Valid()
+    fmt.Println(e)
 }
 
 

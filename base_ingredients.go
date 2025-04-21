@@ -1,7 +1,6 @@
 package main
 
 import (
-    "errors"
     "fmt"
 
     "gopkg.in/yaml.v3"
@@ -11,11 +10,11 @@ import (
 
 var BaseIngredientsLookup = GetBaseIngredientsTable()
 type BaseIngredientName string
-func (b BaseIngredientName) BaseIngredientName() (BaseIngredientName, error) {
+func (b BaseIngredientName) Valid() BaseIngredientName {
     if _, ok := BaseIngredientsLookup[string(b)]; ok {
-        return b, nil
+        return b
     }else{
-        return "", errors.New(fmt.Sprintf("BaseIngredientName %s not found", b))
+        panic(fmt.Sprintf("BaseIngredientName %s not found", b))
     }
 }
 
