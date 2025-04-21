@@ -1,4 +1,4 @@
-package main
+package unclenelly 
 
 import (
     "fmt"
@@ -8,25 +8,25 @@ import (
 
 type productResult struct {
     Multiplier          float64
-    ResultEffectSet     map[EffectName]EffectRef
+    ResultEffectSet     map[string]string
 }
 
 type testProduct struct {
-    BaseIngredient  BaseIngredientName
-    MixQueue        []MixIngredientName
+    BaseIngredient  string
+    MixQueue        []string
     ExpectedResults productResult
 }
 
 var testingMixProducts = []testProduct{
     {
         // OG Kush + Cuke + Mega Bean -> [Glowing, Cyclopean, Foggy]
-        BaseIngredient: BaseIngredientName("OG Kush"), 
-        MixQueue: []MixIngredientName{"Cuke", "Mega Bean"}, 
+        BaseIngredient: "OG Kush", 
+        MixQueue: []string{"Cuke", "Mega Bean"}, 
         ExpectedResults: productResult{
-            ResultEffectSet: map[EffectName]EffectRef{
-                "Glowing": {"Glowing"},
-                "Cyclopean": {"Cyclopean"},
-                "Foggy": {"Foggy"},
+            ResultEffectSet: map[string]string{
+                "Glowing": "Glowing",
+                "Cyclopean": "Cyclopean",
+                "Foggy": "Foggy",
             },
             Multiplier: 1.0 + 0.48 + 0.56 + 0.36,
         },
@@ -35,8 +35,8 @@ var testingMixProducts = []testProduct{
 
 func fullyProcessOneProduct(tp *testProduct) Product {
     product := Product{}
-    product.Initialize(BaseIngredientRef{tp.BaseIngredient})
-    product.MixQueue = tp.MixQueue
+    product.Initialize(tp.BaseIngredient)
+    product.SetMixQueue(tp.MixQueue)
     product.MixAll()
     product.UpdateMultiplier()
     return product
@@ -47,28 +47,28 @@ func TestMixing(t *testing.T) {
         t.Run(fmt.Sprintf("%s + %s", tp.BaseIngredient, tp.MixQueue), func(t *testing.T) {
             product := fullyProcessOneProduct(&tp)
             got := productResult{
-                Multiplier: product.Multiplier,
-                ResultEffectSet: EffectSet(product.Effects[:]),
+                Multiplier: product.Multiplier(),
+                ResultEffectSet: product.EffectSet(),
             }
-            if len(product.MixQueue) != 0 {
-                t.Errorf("Expected MixQueue to be empty, got %v", product.MixQueue)
+            if len(product.MixQueue()) != 0 {
+                t.Errorf("Expected MixQueue to be empty, got %v", product.MixQueue())
             }
-            expectedHistory := []MixIngredientRef{}
+            expectedHistory := []string{}
             for _, ingredient := range tp.MixQueue {
-                expectedHistory = append(expectedHistory, MixIngredientRef{ingredient})
+                expectedHistory = append(expectedHistory, ingredient)
             }
-            if len(product.MixHistory) != len(expectedHistory){
-                t.Errorf("Expected %d effects in history, got %d", len(expectedHistory), len(product.MixHistory))
+            if len(product.MixHistory()) != len(expectedHistory){
+                t.Errorf("Expected %d effects in history, got %d", len(expectedHistory), len(product.MixHistory()))
             }
             history_ok := true
-            for i, eff := range product.MixHistory {
+            for i, eff := range product.MixHistory() {
                 if eff != expectedHistory[i]{
                     history_ok = false
                     break
                 }
             }
             if !history_ok {
-                t.Errorf("Expected history %v, got %v", expectedHistory, product.MixHistory)
+                t.Errorf("Expected history %v, got %v", expectedHistory, product.MixHistory())
             }
             if got.Multiplier != tp.ExpectedResults.Multiplier {
                 t.Errorf("Expected multiplier %v, got %v", tp.ExpectedResults.Multiplier, got.Multiplier)

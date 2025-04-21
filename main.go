@@ -2,12 +2,14 @@ package main
 
 import (
     "fmt"
+
+    UN "github.com/tadyen/uncle-nelly/unclenelly"
 )
 
 func main(){
-    e := EffectName("Fogga").Valid()
-    fmt.Println(e)
+    
+    fmt.Println("Product %v", product)
+
+
+    return
 }
-
-
-

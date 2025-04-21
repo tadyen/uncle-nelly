@@ -1,4 +1,4 @@
-module uncle-nelly
+module github.com/tadyen/uncle-nelly
 
 go 1.24.0
 
