@@ -29,6 +29,28 @@ type Effect struct {
     Conversion []map[string]string
 }
 
+// EffectRef is a reference to an effect by name, providing a lookup method
+// EffectRef can be used as a stateful object that mutates
+type EffectRef struct {
+    Name EffectName
+}
+func (e EffectRef) Lookup() Effect {
+    return EffectsLookup[string(e.Name)]
+}
+func (e *EffectRef) MutateWith(effect EffectName){
+    conversion := e.Lookup().Conversion
+    for _, entry := range conversion {
+        for name, result := range entry{
+            if name == string(effect) {
+                e.Name = EffectName(result)
+                break
+            }
+        }
+    }
+    return
+}
+
+
 type EffectsTable map[string]Effect
 
 func GetEffectsTable() EffectsTable{
@@ -48,6 +70,7 @@ func GetEffectsTable() EffectsTable{
     return table
 }
 
+const NoEffect = EffectName("None") // To reference the None effect
 var EffectsRawYAML = `
 # Kush cooking effects table
 # https://docs.google.com/spreadsheets/d/1Swo-SuDGqPy5hSvRVM-Moix8RjlqQkql0nl1_8CREUM/edit?usp=sharing

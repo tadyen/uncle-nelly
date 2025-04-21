@@ -20,8 +20,6 @@ func (m MixIngredientName) MixIngredientName() (MixIngredientName, error) {
     }
 }
 
-
-
 type MixIngredientsYAML map[string]struct {
     Effect string  `yaml:"Effect"`
     Price  int     `yaml:"Price"`
@@ -31,6 +29,14 @@ type MixIngredient struct {
     Name    string
     Effect  string
     Price   int
+}
+
+// MixIngredientRef is a reference to a mix ingredient, providing a lookup method
+type MixIngredientRef struct {
+    Name MixIngredientName
+}
+func (m MixIngredientRef) Lookup() MixIngredient{
+    return MixIngredientsLookup[string(m.Name)]
 }
 
 func GetMixIngredientsTable() map[string]MixIngredient{
