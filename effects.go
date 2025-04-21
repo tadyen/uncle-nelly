@@ -1,17 +1,30 @@
 package main
 
 import (
+    "errors"
+    "fmt"
+
     "gopkg.in/yaml.v3"
 )
 
 // Data stored as YAML string instead of a .yaml in order to hardcode and build it as wasm
+
+var EffectsLookup = GetEffectsTable()
+type EffectName string
+func (e EffectName) EffectName() (EffectName, error) {
+    if _, ok := EffectsLookup[string(e)]; ok{
+        return e, nil
+    }else{
+        return "", errors.New(fmt.Sprintf("Effect %s not found", e))
+    }
+}
 
 type EffectsYAML map[string]struct{
     Multiplier float64 `yaml:"Multiplier"`
     Conversion []map[string]string `yaml:"Conversion"`
 }
 type Effect struct {
-    Name string
+    Name string 
     Multiplier float64
     Conversion []map[string]string
 }
@@ -24,7 +37,7 @@ func GetEffectsTable() EffectsTable{
     if err != nil {
         panic(err)
     }
-    table := EffectsTable{}
+    table := map[string]Effect{}
     for name, effect := range effects_yaml {
         table[name] = Effect{
             Name: name,

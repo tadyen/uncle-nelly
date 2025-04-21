@@ -1,10 +1,26 @@
 package main
 
 import (
+    "errors"
+    "fmt"
+
     "gopkg.in/yaml.v3"
 )
 
 // Data stored as YAML string instead of a .yaml in order to hardcode and build it as wasm
+
+
+var MixIngredientsLookup = GetMixIngredientsTable()
+type MixIngredientName string
+func (m MixIngredientName) MixIngredientName() (MixIngredientName, error) {
+    if _, ok := MixIngredientsLookup[string(m)]; ok{
+        return m, nil
+    }else{
+        return "", errors.New(fmt.Sprintf("Mix ingredients %s not found", m))
+    }
+}
+
+
 
 type MixIngredientsYAML map[string]struct {
     Effect string  `yaml:"Effect"`

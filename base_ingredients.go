@@ -1,10 +1,23 @@
 package main
 
 import (
+    "errors"
+    "fmt"
+
     "gopkg.in/yaml.v3"
 )
 
 // Data stored as YAML string instead of a .yaml in order to hardcode and build it as wasm
+
+var BaseIngredientsLookup = GetBaseIngredientsTable()
+type BaseIngredientName string
+func (b BaseIngredientName) BaseIngredientName() (BaseIngredientName, error) {
+    if _, ok := BaseIngredientsLookup[string(b)]; ok {
+        return b, nil
+    }else{
+        return "", errors.New(fmt.Sprintf("BaseIngredientName %s not found", b))
+    }
+}
 
 type BaseIngredientsYaml struct {
     BaseTypePrice map[string]int    `yaml:"BaseTypePrice"`
