@@ -7,9 +7,12 @@ import (
 )
 
 func main(){
-    
-    fmt.Println("Product %v", product)
-
+    product := UN.Product{}
+    product.Initialize("Meth")
+    product.SetMixQueue([]string{"Cuke", "Addy", "Horse Semen"})
+    product.MixAll()
+    result := product.EffectSet()
+    fmt.Printf("Effects: %v\n", result)
 
     return
 }
