@@ -1,18 +1,17 @@
 import './App.css'
 
-import Divider, {DividerProps} from './Components/Divider'
 import Navbar from './Components/Navbar'
 import Footer from './Components/Footer'
+import CookingSim from './SubPages/CookingSim'
 
-const dividerProps: DividerProps = {
-  start: <Navbar />,
-  end: <Footer />,
-}
 function App() {
   
   return (
-    <>
+    <> 
       <Navbar />
+      <div className="flex min-h-80 min-w-20 border-red-500">
+        <CookingSim />
+      </div>
       <Footer />
     </>
   )
