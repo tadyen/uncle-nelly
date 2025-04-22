@@ -1,5 +1,9 @@
 package unclenelly
 
+import (
+    "math"
+)
+
 const ProductMaxEffects = 8
 
 // Product is the exposed version of the product struct for simpler usage
@@ -198,7 +202,7 @@ func (p *Product) UpdateMultiplier(){
     p.SafeProduct.UpdateMultiplier()
 }
 func (p *SafeProduct) UpdateMultiplier(){
-    p.Multiplier = 1.0
+    p.Multiplier = float64(1.0)
     for _, e := range p.Effects {
         if e.Name != NoEffect {
             p.Multiplier += e.Lookup().Multiplier
@@ -213,7 +217,7 @@ func (p *Product) UpdatePrice(){
 func (p *SafeProduct) UpdatePrice(){
     basePrice := p.Base.Lookup().Price
     p.UpdateMultiplier()
-    p.Price = int32(float64(basePrice) * p.Multiplier)
+    p.Price = int32( math.Round(float64(basePrice) * p.Multiplier) )
 }
 
 func (p *Product) MixAll(){

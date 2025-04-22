@@ -118,7 +118,7 @@ Balding:
   Conversion:
     - Calorie-Dense: Sneaky
 Sedating:
-  Multiplier: 0.36
+  Multiplier: 0.26
   Conversion:
     - Athletic:           Munchies
     - Thought-Provoking:  Gingeritis
