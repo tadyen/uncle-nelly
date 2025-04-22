@@ -19,19 +19,19 @@ func (b BaseIngredientName) Valid() BaseIngredientName {
 }
 
 type BaseIngredientsYaml struct {
-    BaseTypePrice map[string]int    `yaml:"BaseTypePrice"`
+    BaseTypePrice map[string]int32    `yaml:"BaseTypePrice"`
     BaseIngredients map[string]struct{
-        Type string         `yaml:"Type"`
-        Effect []string     `yaml:"Effect"`
+        Type    string      `yaml:"Type"`
+        Effect  []string    `yaml:"Effect"`
     } `yaml:"BaseIngredients"`
 }
 
 // Todo?: Type (eg Weed) is not statically checked. Treated as generic string field for now. Fix this.
 type BaseIngredient struct{
-    Name string
-    Type string
-    Effect []string
-    Price int
+    Name    string
+    Type    string
+    Effect  []string
+    Price   int32
 }
 
 // BaseIngredientRef is a reference to a BaseIngredient by name, providing a Lookup method
@@ -64,7 +64,7 @@ func GetBaseIngredientsTable() map[string]BaseIngredient{
 var BaseIngredientsRawYAML = `
 ---
 BaseTypePrice:  # <Base>:<Base Price>
-    Weed: 45
+    Weed: 35
     Meth: 70
     Cocaine: 150
 BaseIngredients:

@@ -108,6 +108,6 @@ Addy:
     Effect: Thought-Provoking
     Price: 9
 "Horse Semen":
-    Effect: "Long Faced"
+    Effect: "Long faced"
     Price: 9
 `

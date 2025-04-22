@@ -118,6 +118,7 @@ func (p *Product) Initialize(baseIngredient string){
 func (p *SafeProduct) Initialize(baseIngredient BaseIngredientRef){
     p.Base = baseIngredient
     p.Multiplier = 1.0
+    p.Price = baseIngredient.Lookup().Price
     p.MixQueue = []MixIngredientName{}
     p.MixHistory = []MixIngredientRef{}
     for i := range len(p.Effects){

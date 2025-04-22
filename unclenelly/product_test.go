@@ -62,7 +62,7 @@ var testingMixProducts = []testProduct{
         BaseIngredient: "OG Kush", 
         MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery"}, 
         ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric"," Balding", "Jennerising", "Thought-Provoking", "Bright-Eyed"},
+            Effects: []string{"Euphoric","Balding", "Jennerising", "Thought-Provoking", "Bright-Eyed"},
             Price: 96,
         },
     },
@@ -70,7 +70,7 @@ var testingMixProducts = []testProduct{
         BaseIngredient: "OG Kush", 
         MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili"}, 
         ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric"," Balding", "Spicy", "Bright-Eyed", "Jennerising", "Thought-Provoking"},
+            Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Jennerising", "Thought-Provoking"},
             Price: 109,
         },
     },
@@ -78,7 +78,7 @@ var testingMixProducts = []testProduct{
         BaseIngredient: "OG Kush", 
         MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean"}, 
         ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric"," Balding", "Spicy", "Bright-Eyed", "Paranoia", "Energizing", "Foggy"},
+            Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Paranoia", "Energizing", "Foggy"},
             Price: 99,
         },
     },
@@ -149,7 +149,7 @@ func fullyProcessOneProduct(tp *testProduct) Product {
     product.Initialize(tp.BaseIngredient)
     product.SetMixQueue(tp.MixQueue)
     product.MixAll()
-    product.UpdateMultiplier()
+    product.UpdatePrice()
     return product
 }
 
@@ -191,10 +191,10 @@ func TestMixing(t *testing.T) {
             }
             expectedEffects := make(map[string]string)
             for _, effect := range tp.ExpectedResults.Effects {
-                expectedEffects[effect] = effect
+                expectedEffects[effect] = string( EffectName(effect).Valid() )
             }
             if !reflect.DeepEqual(expectedEffects, got.Effects) {
-                t.Errorf("Expected effects %v, got %v", expectedEffects, got.Effects)
+                t.Errorf("Wrong effects.\nExpected: \t%v\nGot :\t%v\n", expectedEffects, got.Effects)
             }
         })
     }
