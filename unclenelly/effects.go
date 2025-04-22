@@ -95,7 +95,7 @@ Gingeritis:
   Conversion:
     - Energizing:   Thought-Provoking
     - Toxic:        Smelly
-    - "Long Faced": Refreshing
+    - "Long faced": Refreshing
 Sneaky:
   Multiplier: 0.24
   Conversion:
@@ -169,8 +169,8 @@ Thought-Provoking:
   Conversion:
     - Sedating:     Gingeritis
     - Foggy:        Energizing
-    - "Long Faced": Electrifying
-"Long Faced":
+    - "Long faced": Electrifying
+"Long faced":
   Multiplier: 0.52
   Conversion:
     - Gingeritis:         Refreshing
@@ -180,7 +180,7 @@ Calming:
   Conversion:
     - Gingeritis:   Sneaky
     - Sneaky:       Slippery
-    - Balding:      Anti-Gravity
+    - Balding:      Anti-gravity
     - Sedating:     Bright-Eyed
     - Foggy:        Glowing
     - Jennerising:  Balding
@@ -192,7 +192,7 @@ Munchies:
   Multiplier: 0.12
   Conversion:
     - Energizing:     Athletic
-    - Sneaky:         Anti-Gravity
+    - Sneaky:         Anti-gravity
     - Calorie-Dense:  Calming
     - Sedating:       Slippery
     - Toxic:          Sedating
@@ -216,13 +216,13 @@ Paranoia:
     - Gingeritis: Jennerising
     - Sneaky:     Balding
     - Toxic:      Calming
-    - Slippery:   Anti-Gravity
-Anti-Gravity:
+    - Slippery:   Anti-gravity
+Anti-gravity:
   Multiplier: 0.54 
   Conversion:
     - Calorie-Dense:  Slippery
     - Spicy:          "Tropic Thunder"
-    - "Long Faced":   Calming
+    - "Long faced":   Calming
 Glowing:
   Multiplier: 0.48
   Conversion:
@@ -249,7 +249,7 @@ Laxative:
     - "Tropic Thunder": Calming
     - Sedating:         Euphoric
     - Toxic:            Foggy
-    - Spicy:            "Long Faced"
+    - Spicy:            "Long faced"
     - Bright-Eyed:      Calorie-Dense
 Schizophrenic:
   Multiplier: 0.00
@@ -262,7 +262,7 @@ Siezure-Inducing:
   Multiplier: 0.00
   Conversion:
     - Foggy:        Focused
-    - "Long Faced": Energizing
+    - "Long faced": Energizing
 Explosive:
   Multiplier: 0.00
   Conversion:
@@ -276,7 +276,7 @@ Cyclopean:
 Smelly:
   Multiplier: 0.00
   Conversion:
-    - Gingeritis: Anti-Gravity
+    - Gingeritis: Anti-gravity
 Focused:
   Multiplier: 0.16
   Conversion:

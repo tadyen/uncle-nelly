@@ -11,11 +11,12 @@ type Product struct {
 // Safe Product is for type safety. The 'unsafe' version wraps the safe version
 // avoiding the need to convert string types
 type SafeProduct struct {
-    Base BaseIngredientRef
-    Multiplier float64
-    MixQueue []MixIngredientName
-    MixHistory []MixIngredientRef
-    Effects [ProductMaxEffects]EffectRef
+    Base        BaseIngredientRef
+    Multiplier  float64
+    Price       int32
+    MixQueue    []MixIngredientName
+    MixHistory  []MixIngredientRef
+    Effects     [ProductMaxEffects]EffectRef
 }
 
 
@@ -25,6 +26,9 @@ func (p *Product) Base() string{
 }
 func (p *Product) Multiplier() float64{
     return p.SafeProduct.Multiplier
+}
+func (p *Product) Price() int32{
+    return p.SafeProduct.Price
 }
 func (p *Product) MixQueue() []string{
     mixQueue := make([]string, len(p.SafeProduct.MixQueue))
@@ -54,6 +58,9 @@ func (p *Product) SetBase(baseIngredient string){
 }
 func (p *Product) SetMultiplier(multiplier float64){
     p.SafeProduct.Multiplier = multiplier
+}
+func (p *Product) SetPrice(price int32){
+    p.SafeProduct.Price = price
 }
 func (p *Product) SetMixQueue(ingredients []string){
     safeIngredients := make([]MixIngredientName, len(ingredients))
@@ -88,7 +95,9 @@ func (p *Product) EffectSet() map[string]string{
     effectSet := make(map[string]string)
     safeEffectSet := p.SafeProduct.EffectSet()
     for k, v := range safeEffectSet {
-        effectSet[string(k)] = string(v.Name)
+        if v.Name != NoEffect{
+            effectSet[string(k)] = string(v.Name)
+        }
     }
     return effectSet
 }
@@ -195,6 +204,15 @@ func (p *SafeProduct) UpdateMultiplier(){
         }
     }
     return
+}
+
+func (p *Product) UpdatePrice(){
+    p.SafeProduct.UpdatePrice()
+}
+func (p *SafeProduct) UpdatePrice(){
+    basePrice := p.Base.Lookup().Price
+    p.UpdateMultiplier()
+    p.Price = int32(float64(basePrice) * p.Multiplier)
 }
 
 func (p *Product) MixAll(){
