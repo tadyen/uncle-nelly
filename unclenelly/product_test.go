@@ -80,6 +80,7 @@ func mixingTest(t *testing.T, productsList *[]testProduct){
     }
 }
 
+
 func TestSimpleMix(t *testing.T) {
     var productList = []testProduct{
         {
@@ -105,6 +106,70 @@ func TestSimpleMix(t *testing.T) {
             ExpectedResults: expectedResult{
                 Effects: []string{"Calming", "Toxic", "Sneaky"},
                 Price: 47,
+            },
+        },
+    }
+    mixingTest(t, &productList)
+}
+
+func TestBatonMix(t *testing.T) {
+    // eg. {Blank + Paracetamol + Cuke + Paracetamol} -> { [Paranoia + Energizing] + Paracetamol } -> {Paranoia + Balding + Sneaky}. 
+    // This may look like Paranoia was not modified, when actually {Paranoia->Balding, Energizing->Paranoia, Sneaky added}
+    var productList = []testProduct{
+        {
+            BaseIngredient: "Meth",
+            MixQueue: []string{"Paracetamol"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Sneaky"},
+                Price: 87,
+            },
+        },
+        {
+            BaseIngredient: "Meth",
+            MixQueue: []string{"Paracetamol", "Cuke"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Paranoia", "Energizing"},
+                Price: 85,
+            },
+        },
+        {
+            BaseIngredient: "Meth",
+            MixQueue: []string{"Paracetamol", "Cuke", "Paracetamol"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Paranoia", "Sneaky", "Balding"},
+                Price: 108,
+            },
+        },
+    }
+    mixingTest(t, &productList)
+}
+
+func TestBlockingMix(t *testing.T) {
+    // {Sedating + Munchies} + Athletic -> {Munchies + Sedating + Athletic}
+    // Sedating should've become Munchies, but because Munchies does not mutate, it blocks Sedating from mutating
+    var productList = []testProduct{
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Energy Drink"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Athletic"},
+                Price: 50,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Energy Drink", "Flu Medicine"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Bright-Eyed"},
+                Price: 62,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Energy Drink", "Flu Medicine", "Energy Drink"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Athletic", "Bright-Eyed"},
+                Price: 74,
             },
         },
     }
@@ -167,6 +232,14 @@ func TestChainMixing(t *testing.T) {
             ExpectedResults: expectedResult{
                 Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Spicy", "Bright-Eyed", "Anti-gravity"},
                 Price: 117,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Euphoric", "Bright-Eyed", "Anti-gravity"},
+                Price: 110,
             },
         },
         {
