@@ -162,7 +162,12 @@ func (p *SafeProduct) AddEffect(newEffect EffectName){
     return
 }
 
-
+// Mixing mechanics:
+//      Mutate all effefcts with the next ingredient. Prevent/avoid duplicates. Add new effect without duplicating it.
+// Special case: 
+//      If an effect were to mutates to an already existing effect, and that existing effect does not mutate, 
+//      the former should not be mutated. If the latter mutates, then the former is allowed to mutate too
+//      Unknown behaviour: 2 effects mutating into the same effect. However no such example exists in the table.
 func (p *Product) MixNext(){
     p.SafeProduct.MixNext()
 }   
@@ -177,9 +182,10 @@ func (p *SafeProduct) MixNext() {
     for i := range p.Effects {
         p.Effects[i].MutateWith(nextEffectName)
     }
-    // TODO Fix this. If an effect mutates to an existing effect it should not be removed nor duplicated
-    // Check whether addEffect is opportunistically added into the list ie. if the effect is already present
+    // TODO Fix this on special case.
+    p.DedupeEffects()
     p.AddEffect(nextEffectName)
+
     return
 }
 

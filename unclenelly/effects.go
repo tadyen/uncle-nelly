@@ -226,7 +226,7 @@ Anti-gravity:
 Glowing:
   Multiplier: 0.48
   Conversion:
-    - Sneaky:             Calming
+    - Sneaky:             Toxic
     - Athletic:           Disorienting
     - Thought-Provoking:  Refreshing
 Disorienting:

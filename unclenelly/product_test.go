@@ -24,126 +24,6 @@ type testProduct struct {
     ExpectedResults expectedResult
 }
 
-var testingMixProducts = []testProduct{
-    {
-        // OG Kush + Cuke + Mega Bean -> [Glowing, Cyclopean, Foggy]
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Cuke", "Mega Bean"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Glowing", "Cyclopean", "Foggy"},
-            Price: 84,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Calming", "Long faced"},
-            Price: 57,
-        },
-    },      
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Calming", "Thought-Provoking", "Electrifying"},
-            Price: 71,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Balding", "Thought-Provoking", "Jennerising", "Electrifying"},
-            Price: 93,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric","Balding", "Jennerising", "Thought-Provoking", "Bright-Eyed"},
-            Price: 96,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Jennerising", "Thought-Provoking"},
-            Price: 109,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Paranoia", "Energizing", "Foggy"},
-            Price: 99,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil"}, 
-        ExpectedResults: expectedResult{
-            Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Spicy", "Bright-Eyed", "Anti-gravity"},
-            Price: 117,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink", "Viagor"}, // No change from Viagor
-        ExpectedResults: expectedResult{
-            Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Euphoric", "Bright-Eyed", "Anti-gravity"},
-            Price: 110,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink", "Viagor", "Mouth Wash"}, // No change from Mouth Wash
-        ExpectedResults: expectedResult{
-            Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Euphoric", "Bright-Eyed", "Anti-gravity"},
-            Price: 110,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
-            "Viagor", "Mouth Wash", "Cuke"},
-        ExpectedResults: expectedResult{
-            Effects: []string{"Euphoric", "Munchies", "Sedating", "Laxative", "Balding", "Athletic", "Bright-Eyed", "Anti-gravity"},
-            Price: 109,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
-            "Viagor", "Mouth Wash", "Cuke", "Donut"},
-        ExpectedResults: expectedResult{
-            Effects: []string{"Calming", "Euphoric", "Sedating", "Sneaky", "Laxative", "Athletic", "Slippery", "Bright-Eyed"},
-            Price: 99,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
-            "Viagor", "Mouth Wash", "Cuke", "Donut", "Cuke"},
-        ExpectedResults: expectedResult{
-            Effects: []string{"Calming", "Euphoric", "Paranoia", "Munchies", "Sedating", "Laxative", "Athletic", "Bright-Eyed"},
-            Price: 83,
-        },
-    },
-    {
-        BaseIngredient: "OG Kush", 
-        MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
-            "Viagor", "Mouth Wash", "Cuke", "Donut", "Cuke", "Motor Oil"},
-        ExpectedResults: expectedResult{
-            Effects: []string{"Calming", "Euphoric", "Sedating", "Laxative", "Athletic", "Schizophrenic", "Bright-Eyed", "Anti-gravity"}, 
-            Price: 98,
-        },
-    },
-}
-
 func fullyProcessOneProduct(tp *testProduct) Product {
     product := Product{}
     product.Initialize(tp.BaseIngredient)
@@ -153,8 +33,8 @@ func fullyProcessOneProduct(tp *testProduct) Product {
     return product
 }
 
-func TestMixing(t *testing.T) {
-    for _, tp := range testingMixProducts {
+func mixingTest(t *testing.T, productsList *[]testProduct){
+    for _, tp := range *productsList {
         t.Run(fmt.Sprintf("%s + %s", tp.BaseIngredient, tp.MixQueue), func(t *testing.T) {
             product := fullyProcessOneProduct(&tp)
             got := gotResult{
@@ -200,3 +80,151 @@ func TestMixing(t *testing.T) {
     }
 }
 
+func TestSimpleMix(t *testing.T) {
+    var productList = []testProduct{
+        {
+            // OG Kush + Cuke + Mega Bean -> [Glowing, Cyclopean, Foggy]
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Cuke", "Mega Bean"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Glowing", "Cyclopean", "Foggy"},
+                Price: 84,
+            },
+        },
+        {   
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Mega Bean"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Glowing", "Foggy"},
+                Price: 64,
+            },
+        },
+        {   
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Mega Bean", "Paracetamol"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Toxic", "Sneaky"},
+                Price: 47,
+            },
+        },
+    }
+    mixingTest(t, &productList)
+}
+
+func TestChainMixing(t *testing.T) {
+    var productList = []testProduct{
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Long faced"},
+                Price: 57,
+            },
+        },      
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Thought-Provoking", "Electrifying"},
+                Price: 71,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Balding", "Thought-Provoking", "Jennerising", "Electrifying"},
+                Price: 93,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Euphoric","Balding", "Jennerising", "Thought-Provoking", "Bright-Eyed"},
+                Price: 96,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Jennerising", "Thought-Provoking"},
+                Price: 109,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Euphoric","Balding", "Spicy", "Bright-Eyed", "Paranoia", "Energizing", "Foggy"},
+                Price: 99,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil"}, 
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Spicy", "Bright-Eyed", "Anti-gravity"},
+                Price: 117,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink", "Viagor"}, // No change from Viagor
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Euphoric", "Bright-Eyed", "Anti-gravity"},
+                Price: 110,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink", "Viagor", "Mouth Wash"}, // No change from Mouth Wash
+            ExpectedResults: expectedResult{
+                Effects: []string{"Munchies", "Sedating", "Toxic", "Balding", "Slippery", "Euphoric", "Bright-Eyed", "Anti-gravity"},
+                Price: 110,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
+                "Viagor", "Mouth Wash", "Cuke"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Euphoric", "Munchies", "Sedating", "Laxative", "Balding", "Athletic", "Bright-Eyed", "Anti-gravity"},
+                Price: 109,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
+                "Viagor", "Mouth Wash", "Cuke", "Donut"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Euphoric", "Sedating", "Sneaky", "Laxative", "Athletic", "Slippery", "Bright-Eyed"},
+                Price: 99,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
+                "Viagor", "Mouth Wash", "Cuke", "Donut", "Cuke"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Euphoric", "Paranoia", "Munchies", "Sedating", "Laxative", "Athletic", "Bright-Eyed"},
+                Price: 83,
+            },
+        },
+        {
+            BaseIngredient: "OG Kush", 
+            MixQueue: []string{"Horse Semen", "Addy", "Iodine", "Battery", "Chili", "Mega Bean", "Motor Oil", "Energy Drink",
+                "Viagor", "Mouth Wash", "Cuke", "Donut", "Cuke", "Motor Oil"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Euphoric", "Sedating", "Laxative", "Athletic", "Schizophrenic", "Bright-Eyed", "Anti-gravity"}, 
+                Price: 98,
+            },
+        },
+    }
+    mixingTest(t, &productList)
+}
+
+func TestSpecial(t *testing.T){
+
+}
