@@ -9,10 +9,14 @@ import (
 func main(){
     product := UN.Product{}
     product.Initialize("Meth")
-    product.SetMixQueue([]string{"Cuke", "Addy", "Horse Semen"})
+    product.SetMixQueue([]string{"Cuke", "Addy", "Horse Semen", "Viagra", "Banana", "Motor Oil", "Battery", "Addy", "Mega Bean", "Paracetamol"})
     product.MixAll()
-    result := product.EffectSet()
-    fmt.Printf("Effects: %v\n", result)
+    result := product.Effects()
+    mult := product.Multiplier()
+    for _,v := range result {
+        fmt.Println(v)
+    }
+    fmt.Printf("Multiplier: %f\n", mult)
 
     return
 }

@@ -137,6 +137,10 @@ func (p *Product) AddEffect(newEffect string){
 func (p *SafeProduct) AddEffect(newEffect EffectName){
     for i, e := range p.Effects {
         if e.Name == NoEffect {
+            // avoid duplicates
+            if e.Name == newEffect{
+                break
+            }
             p.Effects[i] = EffectRef{newEffect}
             break
         }
@@ -159,8 +163,25 @@ func (p *SafeProduct) MixNext() {
     for i := range p.Effects {
         p.Effects[i].MutateWith(nextEffectName)
     }
+    // TODO Fix this. If an effect mutates to an existing effect it should not be removed nor duplicated
+    // Check whether addEffect is opportunistically added into the list ie. if the effect is already present
     p.AddEffect(nextEffectName)
     return
+}
+
+func (p *Product) DedupeEffects(){
+    p.SafeProduct.DedupeEffects()
+}
+func (p *SafeProduct) DedupeEffects(){
+    effectCheck := make(map[EffectName]bool)
+    for i, e := range p.Effects {
+        _, exists := effectCheck[e.Name]
+        if !exists {
+            effectCheck[e.Name] = true
+        } else {
+            p.Effects[i] = EffectRef{NoEffect.Valid()}
+        }
+    }
 }
 
 func (p *Product) UpdateMultiplier(){
