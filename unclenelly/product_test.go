@@ -76,6 +76,7 @@ func mixingTest(t *testing.T, productsList *[]testProduct){
             if !reflect.DeepEqual(expectedEffects, got.Effects) {
                 t.Errorf("Wrong effects.\nExpected: \t%v\nGot :\t%v\n", expectedEffects, got.Effects)
             }
+            fmt.Printf("Test %s + %s complete\n", tp.BaseIngredient, tp.MixQueue)
         })
     }
 }

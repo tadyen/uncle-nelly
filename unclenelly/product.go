@@ -8,35 +8,29 @@ import (
 const ProductMaxEffects = 8
 
 type StatefulEffect struct {
-    Current     EffectRef
-    Previous    EffectRef
+    Current     *EffectRef
+    Previous    *EffectRef
 }
 func (e *StatefulEffect) Reset() {
-    e.Current = EffectRef{NoEffect.Valid()}
-    e.Previous = EffectRef{NoEffect.Valid()}
+    e.Current = &EffectRef{NoEffect.Valid()}
+    e.Previous = &EffectRef{NoEffect.Valid()}   // Previous refers to value of previous step, including updating if no-change
 }
 func (e *StatefulEffect) SetCurrentEffect(effect EffectName){
-    if e.Current == (EffectRef{}){
+    if e.Current == (&EffectRef{}){
         e.Reset()
     }
-    e.Current = EffectRef{effect.Valid()}
+    e.Current = &EffectRef{effect.Valid()}
 }
 
 func (e *StatefulEffect) MutateWith(input EffectName){
-    if e.Current == (EffectRef{}) {
+    if e.Current == (&EffectRef{}) {
         e.Reset()
-        return
-    }
-    if (e.Current.Name == NoEffect) || (e.Current.Name == input) {
         return
     }
     prev := e.Current.Name
     e.Current.MutateWith(input)
-    if e.Current.Name == prev {
-        // no change
-        return
-    }
-    e.Previous = EffectRef{prev}
+    e.Previous = &EffectRef{prev}
+    fmt.Printf("Mutated %s to %s by adding %s\n", e.Previous.Name, e.Current.Name, input)
 }
 
 // Revert is a one-way operation.
@@ -152,7 +146,7 @@ func (p *SafeProduct) EffectSet() map[EffectName]EffectRef {
     effectSet := make(map[EffectName]EffectRef)
     for _, ref := range p.Effects {
         if ref.Current.Name.Valid() != NoEffect {
-            effectSet[ref.Current.Name] = ref.Current
+            effectSet[ref.Current.Name] = *ref.Current
         }
     }
     return effectSet
@@ -194,12 +188,14 @@ func (p *Product) AddEffect(newEffect string){
 }
 func (p *SafeProduct) AddEffect(newEffect EffectName){
     for i, e := range p.Effects {
+        // find empty slot
         if e.Current.Name == NoEffect {
-            // avoid duplicates
+            // avoid duplicating
             if e.Current.Name == newEffect{
                 break
             }
             p.Effects[i].SetCurrentEffect(newEffect.Valid())
+            fmt.Printf("Added %s \n", p.Effects[i].Current.Name)
             break
         }
     }
@@ -226,9 +222,13 @@ func (p *SafeProduct) MixNext() {
     for i := range p.Effects {
         p.Effects[i].MutateWith(nextEffectName)
     }
-
+    fmt.Printf("Mutation first-pass result: ")
+    for _, e := range p.Effects {
+        fmt.Printf("%s ", e.Current.Name)
+    }
+    fmt.Printf("\n")
     // Revert effects that are blocked. 
-    // 1. Find duplicates of-post mutation.
+    // 1. Find duplicates of post-mutation.
     indexes := make(map[EffectName][]int)
     for i, e := range p.Effects {
         indexes[e.Current.Name] = append(indexes[e.Current.Name], i)
