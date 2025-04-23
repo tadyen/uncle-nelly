@@ -1,8 +1,6 @@
 package unclenelly 
 
 import (
-    "fmt"
-
     "gopkg.in/yaml.v3"
 )
 
@@ -11,11 +9,11 @@ import (
 
 var MixIngredientsLookup = GetMixIngredientsTable()
 type MixIngredientName string
-func (m MixIngredientName) Valid() MixIngredientName {
+func (m MixIngredientName) Valid() bool{
     if _, ok := MixIngredientsLookup[string(m)]; ok{
-        return m
+        return true
     }else{
-        panic(fmt.Sprintf("Mix ingredients %s not found", m))
+        return false
     }
 }
 
@@ -34,7 +32,7 @@ type MixIngredient struct {
 type MixIngredientRef struct {
     Name MixIngredientName
 }
-func (m MixIngredientRef) Lookup() MixIngredient{
+func (m MixIngredientRef) Lookup() MixIngredient {
     return MixIngredientsLookup[string(m.Name)]
 }
 

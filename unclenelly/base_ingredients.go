@@ -1,8 +1,6 @@
 package unclenelly
 
 import (
-    "fmt"
-
     "gopkg.in/yaml.v3"
 )
 
@@ -10,11 +8,12 @@ import (
 
 var BaseIngredientsLookup = GetBaseIngredientsTable()
 type BaseIngredientName string
-func (b BaseIngredientName) Valid() BaseIngredientName {
+
+func (b BaseIngredientName) Valid() bool {
     if _, ok := BaseIngredientsLookup[string(b)]; ok {
-        return b
+        return true
     }else{
-        panic(fmt.Sprintf("BaseIngredientName %s not found", b))
+        return false
     }
 }
 
@@ -38,7 +37,7 @@ type BaseIngredient struct{
 type BaseIngredientRef struct{
     Name BaseIngredientName
 }
-func (b BaseIngredientRef) Lookup() BaseIngredient {
+func (b BaseIngredientRef) Lookup() BaseIngredient{
     return BaseIngredientsLookup[string(b.Name)]
 }
 

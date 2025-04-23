@@ -25,12 +25,15 @@ type testProduct struct {
 }
 
 func fullyProcessOneProduct(tp *testProduct) Product {
-    product := Product{}
-    product.Initialize(tp.BaseIngredient)
-    product.SetMixQueue(tp.MixQueue)
-    product.MixAll()
-    product.UpdatePrice()
-    return product
+    product, err := NewProduct(tp.BaseIngredient)
+    if err != nil {
+        panic(err)
+    }
+    product, err = Cook(product, tp.MixQueue)
+    if err != nil {
+        panic(err)
+    }
+    return *product
 }
 
 func mixingTest(t *testing.T, productsList *[]testProduct){
@@ -71,7 +74,10 @@ func mixingTest(t *testing.T, productsList *[]testProduct){
             }
             expectedEffects := make(map[string]string)
             for _, effect := range tp.ExpectedResults.Effects {
-                expectedEffects[effect] = string( EffectName(effect).Valid() )
+                if !EffectName(effect).Valid(){
+                    panic(fmt.Sprintf("Effect %s is not valid", effect))
+                }
+                expectedEffects[effect] = effect
             }
             if !reflect.DeepEqual(expectedEffects, got.Effects) {
                 t.Errorf("Wrong effects.\nExpected: \t%v\nGot :\t%v\n", expectedEffects, got.Effects)

@@ -3,38 +3,44 @@ package unclenelly
 import (
     "math"
     "fmt"
+    "errors"
 )
 
 const ProductMaxEffects = 8
 
+// Responsibility of validating effect/ingredient names is on wherever string is being converted
+// NoEffect is a string const.
+
+// StatefulEffect is a wrapper around EffectRef to keep track of the previous effect to allow reverting mutations
 type StatefulEffect struct {
     Current     *EffectRef
     Previous    *EffectRef
 }
-func (e *StatefulEffect) Reset() {
-    e.Current = &EffectRef{NoEffect.Valid()}
-    e.Previous = &EffectRef{NoEffect.Valid()}   // Previous refers to value of previous step, including updating if no-change
+func (e *StatefulEffect) Reset() error {
+    if !NoEffect.Valid(){
+        return fmt.Errorf("Invalid effect %s", NoEffect)
+    }
+    e.Current = &EffectRef{NoEffect}
+    e.Previous = &EffectRef{NoEffect}   // Previous refers to value of previous step, including updating if no-change
+    return nil
 }
 func (e *StatefulEffect) SetCurrentEffect(effect EffectName){
     if e.Current == (&EffectRef{}){
         e.Reset()
     }
-    e.Current = &EffectRef{effect.Valid()}
+    e.Current = &EffectRef{effect}
 }
-
 func (e *StatefulEffect) MutateWith(input EffectName){
     if e.Current == (&EffectRef{}) {
         e.Reset()
-        return
     }
     prev := e.Current.Name
     e.Current.MutateWith(input)
     e.Previous = &EffectRef{prev}
-    fmt.Printf("Mutated %s to %s by adding %s\n", e.Previous.Name, e.Current.Name, input)
 }
 
-// Revert is a one-way operation.
-func (e *StatefulEffect) Revert() (ok bool) {
+func (e *StatefulEffect) Revert() (ok bool){
+    // Revert is a one-way operation.
     if e.Current.Name == e.Previous.Name {
         return false
     }
@@ -42,14 +48,12 @@ func (e *StatefulEffect) Revert() (ok bool) {
     return true
 }
 
-// Product is the exposed version of the product struct for simpler usage
-// Assertations are done in the safe version
+// Product is the version that works with string type
+// SafeProduct uses custom types instead which needs to be converted from string
+// This makes Product easier to use directly
 type Product struct {
     SafeProduct *SafeProduct
 }
-
-// Safe Product is for type safety. The 'unsafe' version wraps the safe version
-// avoiding the need to convert string types
 type SafeProduct struct {
     Base        BaseIngredientRef
     Multiplier  float64
@@ -59,8 +63,45 @@ type SafeProduct struct {
     Effects     [ProductMaxEffects]StatefulEffect
 }
 
+// Not an object. Just a struct to hold info queried off product
+type ProductStatus struct {
+    Base        string
+    Multiplier  float64
+    Price       int32
+    MixQueue    []string
+    MixHistory  []string
+    Effects     []string
+}
 
-// Getters
+func NewProduct(baseIngredient string) (*Product, error){
+    if baseIngredient == "" {
+        return nil, errors.New("base ingredient cannot be empty")}
+    if ! BaseIngredientName(baseIngredient).Valid(){
+        return nil, fmt.Errorf("base ingredient %s is not valid", baseIngredient)
+    }
+    p := &Product{}
+    p.Initialize(baseIngredient)
+    return p, nil
+}
+// Preferred way to cook a product
+func Cook(product *Product, mixIngredients []string) (*Product, error){
+    for _, ingredient := range mixIngredients {
+        if !MixIngredientName(ingredient).Valid(){
+            return product, fmt.Errorf("Mix ingredient %s not valid", ingredient)
+        }
+    }
+    // Clear queue and replace with new ingredients
+    err := product.SetMixQueue(mixIngredients)
+    if err != nil {
+        return product, err
+    }
+    product.MixAll()
+    product.UpdateMultiplier()
+    product.UpdatePrice()
+    return product, nil
+}
+
+// Product Getters
 func (p *Product) Base() string{
     return string(p.SafeProduct.Base.Name)
 }
@@ -85,42 +126,45 @@ func (p *Product) MixHistory() []string{
     return mixHist
 }
 func (p *Product) Effects() []string{
-    effects := make([]string, ProductMaxEffects)
-    for i, effect := range p.SafeProduct.Effects {
-        effects[i] = string(effect.Current.Name)
+    effects := []string{}
+    for key := range p.EffectSet(){
+        effects = append(effects, key)
     }
     return effects
 }
-  
-// Setters
-func (p *Product) SetBase(baseIngredient string){
-    p.SafeProduct.Base = BaseIngredientRef{BaseIngredientName(baseIngredient).Valid()}
+func (p *Product) Status() ProductStatus{
+    return ProductStatus{
+        Base:       p.Base(),
+        Multiplier: p.Multiplier(),
+        Price:      p.Price(),
+        MixQueue:   p.MixQueue(),
+        MixHistory: p.MixHistory(),
+        Effects:    p.Effects(),
+    }
 }
-func (p *Product) SetMultiplier(multiplier float64){
-    p.SafeProduct.Multiplier = multiplier
+
+// Product Setters
+func (p *Product) SetBase(baseIngredient string) error {
+    if !BaseIngredientName(baseIngredient).Valid() {
+        return fmt.Errorf("Base ingredient %s not valid", baseIngredient)
+    }
+    p.SafeProduct.Base = BaseIngredientRef{BaseIngredientName(baseIngredient)}
+    return nil
 }
-func (p *Product) SetPrice(price int32){
-    p.SafeProduct.Price = price
-}
-func (p *Product) SetMixQueue(ingredients []string){
+func (p *Product) SetMixQueue(ingredients []string) error {
     safeIngredients := make([]MixIngredientName, len(ingredients))
     for i, ingredient := range ingredients {
-        safeIngredients[i] = MixIngredientName(ingredient).Valid()
+        if !MixIngredientName(ingredient).Valid() {
+            return fmt.Errorf("Mix ingredient %s not valid", ingredient)
+        }
+        safeIngredients[i] = MixIngredientName(ingredient) 
     }
     p.SafeProduct.MixQueue = safeIngredients
-}
-func (p *Product) SetMixHistory(ingredients []string){
-    safeRefs := make([]MixIngredientRef, len(ingredients))
-    for i, ingredient := range ingredients {
-        safeRefs[i] = MixIngredientRef{MixIngredientName(ingredient).Valid()}
-    }
-    p.SafeProduct.MixHistory = safeRefs
+    return nil
 }
 
-// Each method exists as a pair of safe and unsafe methods. The unsafe wraps the safe
-
-// Do not allow setting effects directly. Effects must be cleared and added one-by-one via AddEffect()
-// TODO: Add a wrapper for adding multiple effects 
+// === Method Pairs ===
+// Each method described onwards exists in pairs of Product and SafeProduct versions.
 func (p *Product) ClearEffects(){
     p.SafeProduct.ClearEffects()
 }
@@ -145,18 +189,26 @@ func (p *Product) EffectSet() map[string]string{
 func (p *SafeProduct) EffectSet() map[EffectName]EffectRef {
     effectSet := make(map[EffectName]EffectRef)
     for _, ref := range p.Effects {
-        if ref.Current.Name.Valid() != NoEffect {
+        if ref.Current.Name != NoEffect {
             effectSet[ref.Current.Name] = *ref.Current
         }
     }
     return effectSet
 }
 
-func (p *Product) Initialize(baseIngredient string){
+func (p *Product) Initialize(baseIngredient string) error{
     p.SafeProduct = &SafeProduct{}
-    p.SafeProduct.Initialize(BaseIngredientRef{BaseIngredientName(baseIngredient).Valid()}) 
+    baseIngredientRef := BaseIngredientRef{BaseIngredientName(baseIngredient)}
+    if ! baseIngredientRef.Name.Valid(){
+        return fmt.Errorf("Base ingredient %s is not valid", baseIngredient)
+    }
+    err := p.SafeProduct.Initialize(baseIngredientRef)
+    if err != nil {
+         return err
+    }
+    return nil
 }
-func (p *SafeProduct) Initialize(baseIngredient BaseIngredientRef){
+func (p *SafeProduct) Initialize(baseIngredient BaseIngredientRef) error {
     p.Base = baseIngredient
     p.Multiplier = 1.0
     p.Price = baseIngredient.Lookup().Price
@@ -167,24 +219,36 @@ func (p *SafeProduct) Initialize(baseIngredient BaseIngredientRef){
         p.Effects[i].Reset()
     }
     for i, effect := range baseIngredient.Lookup().Effect {
-        p.Effects[i].SetCurrentEffect( EffectName(effect).Valid() )
+        if !EffectName(effect).Valid(){
+            return fmt.Errorf("Base ingredient %s has invalid effect %s", baseIngredient, effect)
+        }
+        p.Effects[i].SetCurrentEffect( EffectName(effect) )
     }
+    return nil
 }
 
-func (p *Product) QueueIngredients(ingredients []string){
+func (p *Product) QueueIngredients(ingredients []string) error {
     safeIngredients := make([]MixIngredientName, len(ingredients))
     for i, ingredient := range ingredients {
-        safeIngredients[i] = MixIngredientName(ingredient).Valid()
+        if !MixIngredientName(ingredient).Valid(){
+            return fmt.Errorf("Mix ingredient %s not valid", ingredient)
+        }
+        safeIngredients[i] = MixIngredientName(ingredient)
     }
     p.SafeProduct.QueueIngredients(safeIngredients)
+    return nil
 }
 func (p *SafeProduct) QueueIngredients(ingredients []MixIngredientName){
     p.MixQueue = append(p.MixQueue, ingredients...)
 }
 
 
-func (p *Product) AddEffect(newEffect string){
-    p.SafeProduct.AddEffect(EffectName(newEffect).Valid())
+func (p *Product) AddEffect(newEffect string) error {
+    if !EffectName(newEffect).Valid(){
+        return fmt.Errorf("Effect %s not valid", newEffect)
+    }
+    p.SafeProduct.AddEffect(EffectName(newEffect))
+    return nil
 }
 func (p *SafeProduct) AddEffect(newEffect EffectName){
     for i, e := range p.Effects {
@@ -194,8 +258,7 @@ func (p *SafeProduct) AddEffect(newEffect EffectName){
             if e.Current.Name == newEffect{
                 break
             }
-            p.Effects[i].SetCurrentEffect(newEffect.Valid())
-            fmt.Printf("Added %s \n", p.Effects[i].Current.Name)
+            p.Effects[i].SetCurrentEffect(newEffect)
             break
         }
     }
@@ -222,11 +285,6 @@ func (p *SafeProduct) MixNext() {
     for i := range p.Effects {
         p.Effects[i].MutateWith(nextEffectName)
     }
-    fmt.Printf("Mutation first-pass result: ")
-    for _, e := range p.Effects {
-        fmt.Printf("%s ", e.Current.Name)
-    }
-    fmt.Printf("\n")
     // Revert effects that are blocked. 
     // 1. Find duplicates of post-mutation.
     indexes := make(map[EffectName][]int)
@@ -243,9 +301,7 @@ func (p *SafeProduct) MixNext() {
     // break if revert is successful. This assumes the "unknown behaviour" case is not possible
     for _, indexList := range dupes {
         dedupe: for _, i := range indexList {
-            curr := p.Effects[i].Current.Name
             if p.Effects[i].Revert() {
-                fmt.Printf("Reverted %s to %s\n",curr, p.Effects[i].Current.Name)
                 break dedupe
             }
         }
@@ -256,23 +312,15 @@ func (p *SafeProduct) MixNext() {
     return
 }
 
-// Effects shouldnt actually be duplicated.
-/*
-func (p *Product) DedupeEffects(){
-    p.SafeProduct.DedupeEffects()
+func (p *Product) MixAll(){
+    p.SafeProduct.MixAll()
 }
-func (p *SafeProduct) DedupeEffects(){
-    effectCheck := make(map[EffectName]bool)
-    for i, e := range p.Effects {
-        _, exists := effectCheck[e.Name]
-        if !exists {
-            effectCheck[e.Name] = true
-        } else {
-            p.Effects[i] = EffectRef{NoEffect.Valid()}
-        }
+func (p *SafeProduct) MixAll(){
+    for len(p.MixQueue) > 0 {
+        p.MixNext()
     }
+    return
 }
-*/
 
 func (p *Product) UpdateMultiplier(){
     p.SafeProduct.UpdateMultiplier()
@@ -296,12 +344,4 @@ func (p *SafeProduct) UpdatePrice(){
     p.Price = int32( math.Round(float64(basePrice) * p.Multiplier) )
 }
 
-func (p *Product) MixAll(){
-    p.SafeProduct.MixAll()
-}
-func (p *SafeProduct) MixAll(){
-    for len(p.MixQueue) > 0 {
-        p.MixNext()
-    }
-    return
-}
+

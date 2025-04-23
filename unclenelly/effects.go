@@ -1,8 +1,6 @@
 package unclenelly 
 
 import (
-    "fmt"
-
     "gopkg.in/yaml.v3"
 )
 
@@ -10,11 +8,12 @@ import (
 
 var EffectsLookup = GetEffectsTable()
 type EffectName string
-func (e EffectName) Valid() EffectName {
+
+func (e EffectName) Valid() bool {
     if _, ok := EffectsLookup[string(e)]; ok{
-        return e
+        return true
     }else{
-        panic(fmt.Sprintf("Effect %s not found", e))
+        return false
     }
 }
 
@@ -34,10 +33,10 @@ type EffectRef struct {
     Name EffectName
 }
 func (e EffectRef) Lookup() Effect {
-    return EffectsLookup[string(e.Name.Valid())]
+    return EffectsLookup[string(e.Name)]
 }
-func (e *EffectRef) MutateWith(effect EffectName){
-    conversion := e.Lookup().Conversion
+func (e *EffectRef) MutateWith(effect EffectName) {
+   conversion := e.Lookup().Conversion
     for _, entry := range conversion {
         for name, result := range entry{
             if name == string(effect) {
@@ -46,9 +45,7 @@ func (e *EffectRef) MutateWith(effect EffectName){
             }
         }
     }
-    return
 }
-
 
 type EffectsTable map[string]Effect
 
