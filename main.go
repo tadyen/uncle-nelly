@@ -1,23 +1,21 @@
+//go:build wasm
+// +build wasm
 package main
 
 import (
     "fmt"
+    "syscall/js"
 
-    UN "github.com/tadyen/uncle-nelly/unclenelly"
+    UN "github.com/tadyen/uncle-nelly/go_baggies/unclenelly"
 )
 
-func main(){
-    product := UN.Product{}
-    product.Initialize("Meth")
-    product.SetMixQueue([]string{"Cuke", "Addy", "Horse Semen", "Viagor", "Banana", "Motor Oil", "Battery", "Addy", "Mega Bean", "Paracetamol"})
-    product.MixAll()
-    fmt.Println("Effects:")
-    result := product.Effects()
-    for _, v := range result{
-        fmt.Println("\t", v)
-    }
-    product.UpdatePrice()
-    fmt.Println("Price: ", product.Price())
+type WrappedProduct struct {
+    product     *UN.Product
+}
 
-    return
+func NewWrappedProduct(this js.Value, 
+func main(){
+    js.Global().Set("UncleNelly", js.FuncOf(myFunc))
+
+    <- make(chan struct{}) // Block forever so that Go does not terminate execution
 }

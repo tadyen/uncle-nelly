@@ -1,4 +1,4 @@
-package unclenelly 
+package product 
 
 import (
     "gopkg.in/yaml.v3"
