@@ -75,7 +75,7 @@ type ProductStatus struct {
 
 func NewProduct(baseIngredient string) (*Product, error){
     if baseIngredient == "" {
-        return nil, errors.New("base ingredient cannot be empty")}
+        return nil, errors.New("base ingredient cannot be empty. Perhaps use BlankBaseIngredient instead?")}
     if ! BaseIngredientName(baseIngredient).Valid(){
         return nil, fmt.Errorf("base ingredient %s is not valid", baseIngredient)
     }

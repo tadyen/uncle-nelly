@@ -59,14 +59,18 @@ func GetBaseIngredientsTable() map[string]BaseIngredient{
     return baseIngredientsTable
 }
 
-
+const BlankBaseIngredient = "Blank"     // Special entry for blank ingredient
 var BaseIngredientsRawYAML = `
 ---
 BaseTypePrice:  # <Base>:<Base Price>
+    Blank: 0
     Weed: 35
     Meth: 70
     Cocaine: 150
 BaseIngredients:
+    Blank:
+        Type: Blank
+        Effect: []
     "OG Kush":
         Type: Weed
         Effect: 
