@@ -5,7 +5,6 @@ import (
     "errors"
 )
 
-
 type JobName string
 
 const (
@@ -68,3 +67,4 @@ func(j *Job) Validate() error {
     }
     return errors.Join(errs...)
 }
+

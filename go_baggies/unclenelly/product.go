@@ -3,7 +3,6 @@ package unclenelly
 import (
     "math"
     "fmt"
-    "errors"
 )
 
 const ProductMaxEffects = 8
@@ -75,30 +74,14 @@ type ProductStatus struct {
 
 func NewProduct(baseIngredient string) (*Product, error){
     if baseIngredient == "" {
-        return nil, errors.New("base ingredient cannot be empty. Perhaps use BlankBaseIngredient instead?")}
+        baseIngredient = BlankBaseIngredient
+    }
     if ! BaseIngredientName(baseIngredient).Valid(){
         return nil, fmt.Errorf("base ingredient %s is not valid", baseIngredient)
     }
     p := &Product{}
     p.Initialize(baseIngredient)
     return p, nil
-}
-// Preferred way to cook a product
-func Cook(product *Product, mixIngredients []string) (*Product, error){
-    for _, ingredient := range mixIngredients {
-        if !MixIngredientName(ingredient).Valid(){
-            return product, fmt.Errorf("Mix ingredient %s not valid", ingredient)
-        }
-    }
-    // Clear queue and replace with new ingredients
-    err := product.SetMixQueue(mixIngredients)
-    if err != nil {
-        return product, err
-    }
-    product.MixAll()
-    product.UpdateMultiplier()
-    product.UpdatePrice()
-    return product, nil
 }
 
 // Product Getters
