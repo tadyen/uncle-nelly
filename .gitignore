@@ -23,3 +23,7 @@ go.work.sum
 
 # env file
 .env
+
+#wasm stuff
+*.wasm
+wasm_exec.js
