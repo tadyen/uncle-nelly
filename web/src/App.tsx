@@ -14,15 +14,23 @@ import RecipeOptimiser from './SubPages/RecipeOptimiser'
 function SubApp(){
   const appContext = useAppContext();
   const UN = React.useRef<UncleNelly | null>(null);
-  React.useEffect(()=>{
-    // Load Uncle Nelly
+  const reloadUN = React.useRef(true);
+
+  const loadUN = React.useCallback(()=>{
+    if(! reloadUN.current){
+      return;
+    }
     loadUncleNelly()
       .then((initUN)=>{
         UN.current = initUN();
         appContext.setUncleNelly(UN.current);
       })
       .catch( e => console.log(e))
+    reloadUN.current = false;
+  },[])
 
+  React.useEffect(()=>{
+    loadUN();
     // Set default app option
     appContext.setAppOption(AppOptions.cookingSim);
   },[])
