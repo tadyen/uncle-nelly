@@ -1,5 +1,5 @@
 //go:build wasm
-// +build wasm
+// +build [js, wasm]
 package main
 
 import (
@@ -28,6 +28,14 @@ func jsonify(v any) (map[string]any, error) {
         return nil, err
     }
     return out, nil
+}
+
+func jsonifyNoErr(v any) (map[string]any){
+    b, err := jsonify(v)
+    if err != nil {
+        return nil
+    }
+    return b
 }
 
 func jsRes(response any, err error) any {
@@ -68,7 +76,7 @@ func (jsUN *jsUncleNelly) InitJob (this js.Value, args []js.Value) any {
             return jsRes(nil, err)
         }else{
             jsUN.job = job
-            return jsRes(resOK, nil) 
+            return jsRes(resOK, nil)
         }
     }
     // Validate jobname and set
@@ -90,7 +98,7 @@ func (jsUN *jsUncleNelly) InitJob (this js.Value, args []js.Value) any {
         return jsRes(nil, err)
     }
     jsUN.job = job
-    return jsRes(resOK, nil) 
+    return jsRes(resOK, nil)
 }
 
 // will look to maybe refactor or move these around later
@@ -111,9 +119,9 @@ func (jsUN *jsUncleNelly) GetTables (this js.Value, args []js.Value) any {
         return jsRes(nil, fmt.Errorf("GetTables: expected 0 args, got %d", len(args)))
     }
     tables := map[string]any{
-        "effects": UN.GetEffectsTable(),
-        "mix_ingredients": UN.GetMixIngredientsTable(),
-        "base_ingredients": UN.GetBaseIngredientsTable(),
+        "effects": jsonifyNoErr(UN.GetEffectsTable()),
+        "mix_ingredients": jsonifyNoErr(UN.GetMixIngredientsTable()),
+        "base_ingredients": jsonifyNoErr(UN.GetBaseIngredientsTable()),
     }
     return jsRes(tables, nil)
 }

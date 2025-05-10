@@ -41,6 +41,7 @@ export default function Navbar(){
             }
             return (
               <div role="tab"
+                key={index}
                 className = {"tab" + tabActive(activeTab)}
                 onClick={tab.onClick}
               >{tab.name}</div>
