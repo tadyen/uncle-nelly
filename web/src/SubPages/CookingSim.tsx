@@ -1,5 +1,5 @@
 import React from 'react';
-
+// import { useAppContext } from '../AppContext';
 
 type StepProps = {
   progress: number;
@@ -19,11 +19,23 @@ function Steps(props: StepProps){
   )
 }
 
-export default function CookingSim(){
+function CookingSim(){
+  // const appContext = useAppContext();
+  // const un = appContext.uncleNelly;
+
   const [progress, setProgress] = React.useState<number>(1);
+  // const [tables, setTables] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setProgress(3);
+    // Default progress to 1
+    setProgress(1);
+
+    // if (un) {
+    //   setTables(un.get_tables());
+    // }
+    //
+    // console.log(tables);
+
   },[]);
 
   return(<>
@@ -32,3 +44,5 @@ export default function CookingSim(){
     </div>
   </>)
 }
+
+export default CookingSim;

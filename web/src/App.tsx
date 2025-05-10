@@ -6,35 +6,54 @@ import './App.css'
 
 import Navbar from './Components/Navbar'
 import Footer from './Components/Footer'
+
 import CookingSim from './SubPages/CookingSim'
+import RecipeReverse from './SubPages/RecipeReverse'
+import RecipeOptimiser from './SubPages/RecipeOptimiser'
 
 function SubApp(){
+  const appContext = useAppContext();
+  const UN = React.useRef<UncleNelly | null>(null);
+  React.useEffect(()=>{
+    // Load Uncle Nelly
+    loadUncleNelly()
+      .then((initUN)=>{
+        UN.current = initUN();
+        appContext.setUncleNelly(UN.current);
+      })
+      .catch( e => console.log(e))
+
+    // Set default app option
+    appContext.setAppOption(AppOptions.cookingSim);
+  },[])
+
+  return <></>
+
+}
+
+function AppSelector(){
   const appContext = useAppContext();
   switch ( appContext.appOption ) {
     case AppOptions.cookingSim:
       return <CookingSim />
+    case AppOptions.recipeReverse:
+      return <RecipeReverse />
+    case AppOptions.recipeOptimiser:
+      return <RecipeOptimiser />
     default:
       return <><p className="mx-auto">tbd</p></>
   }
 }
 
 function App() {
-  const UN = React.useRef<UncleNelly | null>(null);
-  React.useEffect(()=>{
-    loadUncleNelly()
-      .then((initUN)=>{
-        UN.current = initUN();
-      })
-      .catch( e => console.log(e))
-  },[])
-
   return (
     <AppProvider>
+      <SubApp />
       <div className="min-h-[10vh]">
         <Navbar />
       </div>
       <div className="flex min-h-[80vh] border border-red-500">
-        <SubApp />
+        <AppSelector />
       </div>
       <div className="min-h-[10vh]">
         <Footer />

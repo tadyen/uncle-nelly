@@ -15,7 +15,7 @@ export default function Footer(){
       <aside className="grid-flow-row items-center">
         <p> a Schedule I fan project by tadyen. © {new Date().getFullYear()} Uncle Nelly - All rights reserved</p>
         <p>Schedule I is a game by TVGS. The author of this project is not affiliated with TVGS who owns the copyrights to Schedule I.</p>
-        <p>dont do drugs kids</p>
+        <p>drugs are bad, you shouldnt do drugs, mkay</p>
       </aside>
       <nav className="grid-flow-col md:place-self-center -mt-10">
         <a href="https://github.com/tadyen/uncle-nelly/tree/main" target="_blank">

@@ -1,4 +1,5 @@
 import React from 'react'
+import { type UncleNelly } from './unclenelly'
 
 // Options
 export const AppOptions = {
@@ -7,9 +8,14 @@ export const AppOptions = {
   recipeOptimiser: "recipeOptimiser",
 }
 
+type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>
+type TOrNull<T> = T | null
+
 // App state Provider
 interface AppContextInterface {
-  appOption: string|null; setAppOption: React.Dispatch<React.SetStateAction<string|null>>;
+  appOption: TOrNull<string>; setAppOption: ReactSetState<TOrNull<string>>;
+  uncleNelly: TOrNull<UncleNelly>; setUncleNelly: ReactSetState<TOrNull<UncleNelly>>;
+
 }
 
 const AppContext = React.createContext<AppContextInterface|undefined>(undefined)
@@ -23,10 +29,13 @@ export const useAppContext = () => {
 }
 
 export function AppProvider({children}: {children: React.ReactNode}){
-  const [appOption, setAppOption] = React.useState<string|null>(null)
+  const [appOption, setAppOption] = React.useState<string|null>(null);
+  const [uncleNelly, setUncleNelly] = React.useState<UncleNelly|null>(null);
+
   return (
     <AppContext.Provider value={{
       appOption, setAppOption,
+      uncleNelly, setUncleNelly
     }}>
       {children}
     </AppContext.Provider>
