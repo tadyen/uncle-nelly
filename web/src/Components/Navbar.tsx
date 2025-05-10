@@ -1,23 +1,54 @@
+import { useState } from 'react'
+
 import '../App.css'
 import nelly_image from '../assets/uncle_nelly.png'
 
 export default function Navbar(){
-    return (<>
-<div className="navbar bg-base-100 shadow-sm">
-  <div className="navbar-start">
-    <img src={nelly_image} className="max-h-24"/>
-    <a className="btn btn-ghost text-xl">Uncle Nelly</a>
-  </div>
-  <div className="navbar-center hidden lg:flex">
+  const [activeTab, setActiveTab] = useState(0)
 
-    <div role="tablist" className="tabs tabs-border">
-      <a role="tab" className="tab tab-active">Cooking Simulator</a>
-      <a role="tab" className="tab">Recipe Reverse (tbd)</a>
-      <a role="tab" className="tab">Optimiser (tbd)</a>
+  const navTabs = {
+    "0": {
+      name: "Cooking Simulator",
+      onClick: ()=>{setActiveTab(0)},
+    },
+    "1": {
+      name: "Recipe Reverse (tbd)",
+      onClick: ()=>{setActiveTab(1)},
+    },
+    "2": {
+      name: "Optimiser (tbd)",
+      onClick: ()=>{setActiveTab(2)},
+    }
+  }
+
+  return (<>
+  <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar-start">
+      <img src={nelly_image} className="max-h-24"/>
+      <a className="btn btn-ghost text-xl">Uncle Nelly</a>
+    </div>
+    <div className="navbar-center hidden lg:flex">
+
+      <div role="tablist" className="tabs tabs-border">
+        { Object.entries(navTabs).map((entry)=> {
+            const index = entry[0];
+            const tab = entry[1];
+            const tabActive = (num: Number): string=>{
+              const isActiveTab = (num === Number(index));
+              return (isActiveTab ? " tab-active" : " ");
+            }
+            return (
+              <div role="tab"
+                className = {"tab" + tabActive(activeTab)}
+                onClick={tab.onClick}
+              >{tab.name}</div>
+            )
+          })
+        }
+      </div>
+    </div>
+    <div className="navbar-end">
     </div>
   </div>
-  <div className="navbar-end">
-  </div>
-</div>
-    </>)
+  </>)
 }
