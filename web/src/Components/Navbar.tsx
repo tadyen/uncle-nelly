@@ -1,23 +1,25 @@
 import { useState } from 'react'
+import { AppOptions, useAppContext } from '../AppContext'
 
 import '../App.css'
 import nelly_image from '../assets/uncle_nelly.png'
 
 export default function Navbar(){
-  const [activeTab, setActiveTab] = useState(0)
+  const [activeTab, setActiveTab] = useState(0);
+  const appContext = useAppContext();
 
   const navTabs = {
     "0": {
       name: "Cooking Simulator",
-      onClick: ()=>{setActiveTab(0)},
+      onClick: ()=>{setActiveTab(0), appContext.setAppOption(AppOptions.cookingSim)},
     },
     "1": {
       name: "Recipe Reverse (tbd)",
-      onClick: ()=>{setActiveTab(1)},
+      onClick: ()=>{setActiveTab(1), appContext.setAppOption(AppOptions.recipeReverse)},
     },
     "2": {
       name: "Optimiser (tbd)",
-      onClick: ()=>{setActiveTab(2)},
+      onClick: ()=>{setActiveTab(2), appContext.setAppOption(AppOptions.recipeOptimiser)},
     }
   }
 
