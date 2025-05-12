@@ -67,8 +67,8 @@ func TestSimple(t *testing.T) {
         },
         {
             name: "map of array",
-            input: map[string]any{"a": []string{"a", "b", "c"}, "b": []int{1, 2, 3},},
-            expected: map[string]any{"a": []string{"a", "b", "c"}, "b": []int{1, 2, 3},},
+            input:      map[string]any{"a": []string{"a", "b", "c"}, "b": []int{1, 2, 3},},
+            expected:   map[string]any{"a": []string{"a", "b", "c"}, "b": []int{1, 2, 3},},
         },
     }
     for _, test := range tests {

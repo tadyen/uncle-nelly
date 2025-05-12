@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"reflect"
+	"unsafe"
 )
 
 // ReMapStructToMapMap recursively flattens structs, and maps with structs into a json-line map.
@@ -11,7 +12,6 @@ import (
 func ReMapStruct2MapMap(obj any) map[string]any {
     result := map[string]any{}
     v := reflect.ValueOf(obj)
-    t := v.Type()
 
     switch v.Kind() {
     case reflect.Map:
@@ -23,12 +23,9 @@ func ReMapStruct2MapMap(obj any) map[string]any {
         }
         return result
     case reflect.Struct:
-        for i := range v.NumField(){
-            field := t.Field(i)
-            value := v.Field(i)
-            if field.IsExported() {
-                result[field.Name] = handleInner(value.Interface())
-            }
+        mapped := Struct2Map(&obj)
+        for k, v := range mapped {
+            result[k] = handleInner(v)
         }
         return result
     default:
@@ -36,17 +33,16 @@ func ReMapStruct2MapMap(obj any) map[string]any {
     }
 }
 
-func handleInner(value any) any {
-    v := reflect.ValueOf(value)
-    t := reflect.TypeOf(value)
+func handleInner(in any) any {
+    v := reflect.ValueOf(in)
+    t := v.Type()
     switch t.Kind() {
     case reflect.Map, reflect.Struct:
         return ReMapStruct2MapMap(v.Interface())
     case reflect.Array, reflect.Slice:
-        var res = make([]any, v.Len())
-        for i := range v.Len(){
-            val := v.Index(i)
-            res = append(res, handleInner(val.Interface()))
+        res := []any{}
+        for i := range v.Len() {
+            res = append(res, handleInner(v.Index(i).Interface()))
         }
         return res
     case reflect.Func, reflect.Chan, reflect.UnsafePointer, reflect.Ptr:
@@ -66,4 +62,37 @@ func handleInner(value any) any {
     default:
         return nil
     }
+}
+
+func Struct2Map(obj any) map[string]any {
+	result := map[string]any{}
+	v := reflect.ValueOf(obj)
+	t := v.Type()
+
+	// Check if the object is a pointer and dereference it
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		t = v.Type()
+	}
+
+	if v.Kind() != reflect.Struct {
+		return nil // Handle only structs
+	}
+
+	for i := range v.NumField(){
+		field := t.Field(i)
+		fieldValue := v.Field(i)
+
+		// Check if the field is exported
+		if fieldValue.CanInterface() {
+			result[field.Name] = fieldValue.Interface()
+		} else {
+			// Use unsafe to access unexported fields
+			fieldPtr := unsafe.Pointer(v.UnsafeAddr() + field.Offset) // Address of the field
+			fieldValue = reflect.NewAt(field.Type, fieldPtr).Elem()  // Create a reflect.Value from the pointer
+			result[field.Name] = fieldValue.Interface()
+		}
+	}
+
+	return result
 }
