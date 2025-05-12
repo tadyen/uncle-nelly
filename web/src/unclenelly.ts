@@ -3,8 +3,6 @@
 import '../../wasm_exec'
 import wasm from '../../main.wasm?url'
 
-type stringOrNull = string | null
-
 interface UncleNellyResult<T> {
     result?: T
     error?: string
@@ -23,12 +21,13 @@ declare global {
 }
 
 export interface UncleNelly {
-    init_job: () => UncleNellyResult<stringOrNull>
-    reset_product: () => UncleNellyResult<stringOrNull>
+    init_job: () => UncleNellyResult<string|null>
+    reset_product: () => UncleNellyResult<string|null>
     get_tables: () => UncleNellyResult<object|null>
-    set_product_base: (productBase: string) => UncleNellyResult<stringOrNull>
-    cook_with: (ingredients: string[]) => UncleNellyResult<stringOrNull>
+    set_product_base: (productBase: string) => UncleNellyResult<string|null>
+    cook_with: (ingredients: string[]) => UncleNellyResult<string|null>
     product_info: () => UncleNellyResult<object|null>
+    test_func: () => UncleNellyResult<object|null>
 }
 
 const until = (f: () => boolean): Promise<void> => {
