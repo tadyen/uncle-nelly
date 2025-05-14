@@ -23,7 +23,7 @@ func ReMapStruct2MapMap(obj any) map[string]any {
         }
         return result
     case reflect.Struct:
-        mapped := Struct2Map(&obj)
+        mapped := Struct2Map(obj)
         for k, v := range mapped {
             result[k] = handleInner(v)
         }
@@ -52,7 +52,7 @@ func handleInner(in any) any {
     case reflect.String:
         return v.String()
     case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-        return v.Int()
+        return int(v.Int())
     case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
         return v.Uint()
     case reflect.Float32, reflect.Float64:
@@ -68,7 +68,6 @@ func Struct2Map(obj any) map[string]any {
 	result := map[string]any{}
 	v := reflect.ValueOf(obj)
 	t := v.Type()
-
 	// Check if the object is a pointer and dereference it
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
@@ -78,21 +77,22 @@ func Struct2Map(obj any) map[string]any {
 	if v.Kind() != reflect.Struct {
 		return nil // Handle only structs
 	}
-
 	for i := range v.NumField(){
 		field := t.Field(i)
 		fieldValue := v.Field(i)
-
 		// Check if the field is exported
 		if fieldValue.CanInterface() {
 			result[field.Name] = fieldValue.Interface()
 		} else {
-			// Use unsafe to access unexported fields
-			fieldPtr := unsafe.Pointer(v.UnsafeAddr() + field.Offset) // Address of the field
-			fieldValue = reflect.NewAt(field.Type, fieldPtr).Elem()  // Create a reflect.Value from the pointer
-			result[field.Name] = fieldValue.Interface()
+            rs := reflect.ValueOf(obj)
+            rs2 := reflect.New(rs.Type()).Elem()
+            rs2.Set(rs)
+            rf := rs2.Field(i)
+            rf = reflect.NewAt(rf.Type(), unsafe.Pointer(rf.UnsafeAddr())).Elem()
+			result[field.Name] = rf.Interface()
 		}
 	}
-
 	return result
 }
+
+

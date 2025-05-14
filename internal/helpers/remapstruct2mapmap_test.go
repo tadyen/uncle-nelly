@@ -2,9 +2,19 @@ package helpers_test
 
 import (
     "testing"
-    "reflect"
+    "fmt"
+
+    "github.com/google/go-cmp/cmp"
     "github.com/tadyen/uncle-nelly/internal/helpers"
 )
+
+func Comparer[T comparable](a, b T) bool {
+    return a == b
+}
+
+func Compare(a, b any) bool {
+    return cmp.Equal(a,b)
+}
 
 
 func TestSanity(t *testing.T) {
@@ -25,15 +35,16 @@ func TestSanity(t *testing.T) {
         },
         {
             name: "mixed value map",
-            input: map[string]any{"a": 1.0, "b": "2", "c": 3.0},
-            expected: map[string]any{"a": 1.0, "b": "2", "c": 3.0},
+            input: map[string]any{"a": 1.0, "b": "2", "c": true},
+            expected: map[string]any{"a": 1.0, "b": "2", "c": true},
         },
     }
     for _, test := range tests {
         t.Run(test.name, func(t *testing.T) {
             result := helpers.ReMapStruct2MapMap(test.input)
-            if !reflect.DeepEqual(result, test.expected) {
-                t.Errorf("expected %v, got %v", test.expected, result)
+            if ! Compare(result, test.expected) {
+                fmt.Println("diff", cmp.Diff(result, test.expected))
+                t.Errorf("\nexpected %#v,\n got     %#v\n", test.expected, result)
             }
         })
     }
@@ -57,7 +68,7 @@ func TestSimple(t *testing.T) {
             },
         },
         {
-            name: "map of struct",
+name: "map of struct",
             input: map[string]any{
                 "asdf1": struct{ a int; b string; c float32 }{a: 1, b: "2", c: 3.0},
             },
@@ -74,8 +85,9 @@ func TestSimple(t *testing.T) {
     for _, test := range tests {
         t.Run(test.name, func(t *testing.T) {
             result := helpers.ReMapStruct2MapMap(test.input)
-            if !reflect.DeepEqual(result, test.expected) {
-                t.Errorf("expected %v, got %v", test.expected, result)
+            if ! Compare (result, test.expected) {
+                fmt.Println("diff", cmp.Diff(result, test.expected))
+                t.Errorf("\nexpected %#v,\n got     %#v\n", test.expected, result)
             }
         })
     }

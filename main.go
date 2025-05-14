@@ -19,8 +19,8 @@ type jsUncleNelly struct {
 
 const resOK = "OK"
 func flatten (v any) (result any) {
-    // return helpers.ReMapStruct2MapMap(v)
-    return helpers.Jsonify(v)
+    return helpers.ReMapStruct2MapMap(v)
+    // return helpers.Jsonify(v)
 }
 
 func jsRes(response any, err error) any {
