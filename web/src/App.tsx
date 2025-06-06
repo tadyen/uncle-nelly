@@ -13,20 +13,16 @@ import RecipeOptimiser from './SubPages/RecipeOptimiser'
 
 function SubApp(){
   const appContext = useAppContext();
-  const UN = React.useRef<UncleNelly | null>(null);
-  const reloadUN = React.useRef(true);
+  const unelly = React.useRef<UncleNelly | null>(null);
+  const unLoader = React.useRef< () => UncleNelly | null>(null);
 
   const loadUN = React.useCallback(()=>{
-    if(! reloadUN.current){
-      return;
-    }
     loadUncleNelly()
       .then((initUN)=>{
-        UN.current = initUN();
-        appContext.setUncleNelly(UN.current);
+        unLoader.current = initUN;
+        unelly.current = initUN();
+        appContext.setUncleNelly(unelly.current);
       })
-      .catch( e => console.log(e))
-    reloadUN.current = false;
   },[])
 
   React.useEffect(()=>{

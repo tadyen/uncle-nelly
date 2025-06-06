@@ -56,7 +56,6 @@ export async function loadUncleNelly() {
         throw new Error('WebAssembly is not supported in your browser')
     }
 
-
     const go_run = async () => {
         const go = new window.Go();
         const result = await WebAssembly.instantiateStreaming(
@@ -69,14 +68,15 @@ export async function loadUncleNelly() {
 
     const go_runner = async () => {
         while(true){
-            await go_run()
-            console.log('go instance crashed, restarting ...')
+            await go_run();
+            console.log('go instance crashed, restarting ...');
         }
     }
 
-    go_runner()
+    go_runner();
 
     // wait until WASM create the function
     await until(() => window.InitUncleNelly != undefined)
+    console.log('Uncle Nelly WASM loaded')
     return window.InitUncleNelly
 }
