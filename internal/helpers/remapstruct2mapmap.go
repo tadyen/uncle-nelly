@@ -3,6 +3,7 @@ package helpers
 import (
 	"reflect"
 	"unsafe"
+    "fmt"
 )
 
 // ReMapStructToMapMap recursively flattens structs, and maps with structs into a json-line map.
@@ -19,7 +20,8 @@ func ReMapStruct2MapMap(obj any) map[string]any {
         for iter.Next() {
             key := iter.Key()
             val := iter.Value()
-            result[key.String()] = handleInner(val.Interface())
+            // Force convert of key to string using sprintf
+            result[fmt.Sprintf("%v", key)] = handleInner(val.Interface())
         }
         return result
     case reflect.Struct:
@@ -29,7 +31,7 @@ func ReMapStruct2MapMap(obj any) map[string]any {
         }
         return result
     default:
-        return nil
+        return map[string]any{}
     }
 }
 
