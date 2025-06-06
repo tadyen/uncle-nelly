@@ -144,7 +144,10 @@ func (jsUN *jsUncleNelly) ProductInfo(this js.Value, args []js.Value) any {
 	if len(args) != 0 {
 		return jsRes(nil, fmt.Errorf("ProductInfo: expected 0 args, got %d", len(args)))
 	}
-    return jsRes(flatten(jsUN.job.Product.Status()), nil)
+    if jsUN.job == nil || jsUN.job.Product == nil {
+        return jsRes(nil, errors.New("ProductInfo: job or product is not initialized"))
+    }
+    return jsRes(flatten(jsUN.job.Product), nil)
 }
 
 func (jsUN *jsUncleNelly) TestFunc(this js.Value, args []js.Value) any {
@@ -164,7 +167,7 @@ func (jsUN *jsUncleNelly) TestFunc(this js.Value, args []js.Value) any {
             1,2,3,
         },
     }
-    return jsRes(helpers.ReMapStruct2MapMap(payload), nil)
+    return jsRes(flatten(payload), nil)
 }
 
 func main() {
