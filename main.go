@@ -147,9 +147,10 @@ func (jsUN *jsUncleNelly) ProductInfo(this js.Value, args []js.Value) any {
     if jsUN.job == nil || jsUN.job.Product == nil {
         return jsRes(nil, errors.New("ProductInfo: job or product is not initialized"))
     }
-    return jsRes(flatten(jsUN.job.Product), nil)
+    return jsRes(flatten(jsUN.job.Product.Status()), nil)
 }
 
+// Development only to test if js binding can spit out a payload
 func (jsUN *jsUncleNelly) TestFunc(this js.Value, args []js.Value) any {
     if len(args) != 0 {
         return jsRes(nil, fmt.Errorf("TestFunc: expected 0 args, got %d", len(args)))
