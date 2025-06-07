@@ -14,9 +14,10 @@ type TOrNull<T> = T | null
 
 // App state Provider
 interface AppContextInterface {
-  appOption: TOrNull<string>; setAppOption: ReactSetState<TOrNull<string>>;
-  uncleNelly: TOrNull<UncleNelly>; setUncleNelly: ReactSetState<TOrNull<UncleNelly>>;
-
+  UNellyLoader: TOrNull< () => UncleNelly>; setUNellyLoader: ReactSetState<TOrNull< ()=>UncleNelly >>;
+  uncleNelly: TOrNull<UncleNelly>; setUncleNelly: ReactSetState<TOrNull< UncleNelly >>;
+  appOption: TOrNull<string>; setAppOption: ReactSetState<TOrNull< string >>;
+  UNtables: TOrNull<Record<string,any>>; setUNtables: ReactSetState<TOrNull< Record<string,any> >>;
 }
 
 const AppContext = React.createContext<AppContextInterface|undefined>(undefined)
@@ -30,13 +31,17 @@ export const useAppContext = () => {
 }
 
 export function AppProvider({children}: {children: React.ReactNode}){
-  const [appOption, setAppOption] = React.useState<string|null>(null);
-  const [uncleNelly, setUncleNelly] = React.useState<UncleNelly|null>(null);
+  const [UNellyLoader, setUNellyLoader] = React.useState<TOrNull< ()=>UncleNelly >>(null);
+  const [uncleNelly, setUncleNelly] = React.useState<TOrNull< UncleNelly >>(null);
+  const [appOption, setAppOption] = React.useState<TOrNull< string >>(null);
+  const [UNtables, setUNtables] = React.useState<TOrNull< Record<string,any> >>(null);
 
   return (
     <AppContext.Provider value={{
+      UNellyLoader, setUNellyLoader,
+      uncleNelly, setUncleNelly,
       appOption, setAppOption,
-      uncleNelly, setUncleNelly
+      UNtables, setUNtables
     }}>
       {children}
     </AppContext.Provider>

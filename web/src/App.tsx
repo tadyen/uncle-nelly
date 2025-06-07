@@ -15,21 +15,24 @@ import CopilotCooker from './SubPages/CopilotCooker'
 function SubApp(){
   const appContext = useAppContext();
   const unelly = React.useRef<UncleNelly | null>(null);
-  const unLoader = React.useRef< () => UncleNelly | null>(null);
+  const UNLoader = React.useRef< () => UncleNelly | null>(null);
+  const UNTable = React.useRef<Record<string,any> | null>(null);
 
   const loadUN = React.useCallback(()=>{
     loadUncleNelly()
       .then((initUN)=>{
-        unLoader.current = initUN;
+        UNLoader.current = initUN;
         unelly.current = initUN();
         appContext.setUncleNelly(unelly.current);
+        UNTable.current = unelly.current?.get_tables();
       })
   },[])
 
   React.useEffect(()=>{
     loadUN();
     // Set default app option
-    appContext.setAppOption(AppOptions.copilotCooker);
+    appContext.setAppOption(AppOptions.cookingSim);
+    appContext.setUncleNelly(unelly.current);
   },[])
 
   return <></>

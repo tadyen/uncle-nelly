@@ -2,7 +2,7 @@ import React from 'react';
 
 // Import your actual ingredient images
 import breadImg from '../assets/baseIngredients/OGKush_Icon.png';
-import riceImg from '../assets/baseIngredients/Cocaine_Icon.webp';
+import riceImg from '../assets/baseIngredients/Cocaine_Icon.png';
 import pastaImg from '../assets/baseIngredients/SourDiesel_Icon.png';
 
 
