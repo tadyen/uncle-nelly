@@ -10,6 +10,7 @@ import Footer from './Components/Footer'
 import CookingSim from './SubPages/CookingSim'
 import RecipeReverse from './SubPages/RecipeReverse'
 import RecipeOptimiser from './SubPages/RecipeOptimiser'
+import CopilotCooker from './SubPages/CopilotCooker'
 
 function SubApp(){
   const appContext = useAppContext();
@@ -28,7 +29,7 @@ function SubApp(){
   React.useEffect(()=>{
     loadUN();
     // Set default app option
-    appContext.setAppOption(AppOptions.cookingSim);
+    appContext.setAppOption(AppOptions.copilotCooker);
   },[])
 
   return <></>
@@ -44,6 +45,8 @@ function AppSelector(){
       return <RecipeReverse />
     case AppOptions.recipeOptimiser:
       return <RecipeOptimiser />
+    case AppOptions.copilotCooker:
+      return <CopilotCooker />
     default:
       return <><p className="mx-auto">tbd</p></>
   }
