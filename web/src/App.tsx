@@ -1,5 +1,6 @@
 import React from 'react'
 import { loadUncleNelly, type UncleNelly } from './unclenelly'
+import { UncleNellyTables } from './unclenelly_types'
 import { AppOptions, useAppContext, AppProvider } from './AppContext'
 
 import './App.css'
@@ -24,7 +25,7 @@ function SubApp(){
         UNLoader.current = initUN;
         unelly.current = initUN();
         appContext.setUncleNelly(unelly.current);
-        UNTable.current = unelly.current?.get_tables();
+        UNTable.current = unelly.current?.get_tables() as UncleNellyTables;
       })
   },[])
 

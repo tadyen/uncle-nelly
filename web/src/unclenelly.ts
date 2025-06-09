@@ -1,12 +1,9 @@
 // This file loads WASM implementaion of UncleNelly
 
-import '../../wasm_exec'
-import wasm from '../../main.wasm?url'
+import '../../wasm_exec';
+import wasm from '../../main.wasm?url';
+import { UncleNelly } from './unclenelly_types';
 
-interface UncleNellyResult<T> {
-    result?: T
-    error?: string
-}
 
 declare global {
     export interface Window {
@@ -18,16 +15,6 @@ declare global {
         }
         InitUncleNelly: () => UncleNelly,
     }
-}
-
-export interface UncleNelly {
-    init_job: () => UncleNellyResult<string|null>
-    reset_product: () => UncleNellyResult<string|null>
-    get_tables: () => UncleNellyResult<object|null>
-    set_product_base: (productBase: string) => UncleNellyResult<string|null>
-    cook_with: (ingredients: string[]) => UncleNellyResult<string|null>
-    product_info: () => UncleNellyResult<object|null>
-    test_func: () => UncleNellyResult<object|null>
 }
 
 const until = (f: () => boolean): Promise<void> => {
