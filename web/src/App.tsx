@@ -26,7 +26,12 @@ function SubApp(){
         unelly.current = initUN();
         UNLoader.current = initUN;
         if (UNTable.current === null) {
-          const table = unelly.current?.get_tables() as UncleNellyTables;
+          const res = unelly.current?.get_tables();
+          if (res?.error || res?.response === null || res?.response === undefined) {
+            console.error('Error loading Uncle Nelly tables:', res?.error);
+            return;
+          }
+          const table: UncleNellyTables = res.response as UncleNellyTables;
           for (const [table_name,table_content] of Object.entries(table)){
             switch (table_name) {
               case 'base_ingredients':
@@ -63,7 +68,6 @@ function SubApp(){
   },[])
 
   return <></>
-
 }
 
 function AppSelector(){

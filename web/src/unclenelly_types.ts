@@ -1,6 +1,6 @@
 export interface UncleNellyResult<T> {
-    result?: T
     error?: string
+    response?: T
 }
 
 export interface UncleNelly {
