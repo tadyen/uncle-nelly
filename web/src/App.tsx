@@ -1,6 +1,7 @@
 import React from 'react'
-import { loadUncleNelly, type UncleNelly } from './unclenelly'
-import { UncleNellyTables } from './unclenelly_types'
+import { baseIngredientsIcons, mixIngredientsIcons, effectsColors } from './assets/icons'
+import { loadUncleNelly } from './unclenelly'
+import { type UncleNelly, UncleNellyTables } from './unclenelly_types'
 import { AppOptions, useAppContext, AppProvider } from './AppContext'
 
 import './App.css'
@@ -22,18 +23,43 @@ function SubApp(){
   const loadUN = React.useCallback(()=>{
     loadUncleNelly()
       .then((initUN)=>{
-        UNLoader.current = initUN;
         unelly.current = initUN();
-        appContext.setUncleNelly(unelly.current);
-        UNTable.current = unelly.current?.get_tables() as UncleNellyTables;
+        UNLoader.current = initUN;
+        if (UNTable.current === null) {
+          const table = unelly.current?.get_tables() as UncleNellyTables;
+          for (const [table_name,table_content] of Object.entries(table)){
+            switch (table_name) {
+              case 'base_ingredients':
+                Object.keys(table_content).forEach((k)=>{
+                  table.base_ingredients[k].IconRelpath = baseIngredientsIcons[k] || '';
+                })
+                break;
+              case 'mix_ingredients':
+                Object.keys(table_content).forEach((k)=>{
+                  table.mix_ingredients[k].IconRelpath = mixIngredientsIcons[k] || '';
+                })
+                break;
+              case 'effects':
+                Object.keys(table_content).forEach((k)=>{
+                  table.effects[k].Color = effectsColors[k] || '#000000';
+                })
+                break;
+              default:
+                break;
+            }
+          }
+          UNTable.current = table;
+        }
       })
   },[])
 
   React.useEffect(()=>{
     loadUN();
     // Set default app option
+    appContext.setUNellyLoader(UNLoader.current);
     appContext.setAppOption(AppOptions.cookingSim);
     appContext.setUncleNelly(unelly.current);
+    appContext.setUNtables(UNTable.current);
   },[])
 
   return <></>
@@ -60,7 +86,7 @@ function App() {
   return (
     <AppProvider>
       <SubApp />
-      <div className="min-h-[10vh]">
+        <div className="min-h-[10vh]">
         <Navbar />
       </div>
       <div className="flex min-h-[80vh] border border-red-500">
@@ -72,5 +98,7 @@ function App() {
     </AppProvider>
   )
 }
+
+
 
 export default App
