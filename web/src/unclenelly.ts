@@ -3,6 +3,7 @@
 import '../../wasm_exec';
 import wasm from '../../main.wasm?url';
 import { UncleNelly } from './unclenelly_types';
+import until from './helpers/until';
 
 
 declare global {
@@ -15,17 +16,6 @@ declare global {
         }
         InitUncleNelly: () => UncleNelly,
     }
-}
-
-const until = (f: () => boolean): Promise<void> => {
-    return new Promise(resolve => {
-        const intervalCode = setInterval(() => {
-            if (f()) {
-                resolve()
-                clearInterval(intervalCode)
-            }
-        }, 10)
-    })
 }
 
 export async function loadUncleNelly() {
