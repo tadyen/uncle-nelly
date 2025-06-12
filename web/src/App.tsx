@@ -3,6 +3,7 @@ import { baseIngredientsIcons, mixIngredientsIcons, effectsColors } from './asse
 import { loadUncleNelly } from './unclenelly'
 import { type UncleNelly, UncleNellyTables } from './unclenelly_types'
 import { AppOptions, useAppContext, AppProvider } from './AppContext'
+import until from './helpers/until'
 
 import './App.css'
 
@@ -20,51 +21,51 @@ function SubApp(){
   const UNLoader = React.useRef< () => UncleNelly | null>(null);
   const UNTable = React.useRef<Record<string,any> | null>(null);
 
-  const loadUN = React.useCallback(()=>{
-    loadUncleNelly()
-      .then((initUN)=>{
-        unelly.current = initUN();
-        UNLoader.current = initUN;
-        if (UNTable.current === null) {
-          const res = unelly.current?.get_tables();
-          if (res?.error || res?.response === null || res?.response === undefined) {
-            console.error('Error loading Uncle Nelly tables:', res?.error);
-            return;
-          }
-          const table: UncleNellyTables = res.response as UncleNellyTables;
-          for (const [table_name,table_content] of Object.entries(table)){
-            switch (table_name) {
-              case 'base_ingredients':
-                Object.keys(table_content).forEach((k)=>{
-                  table.base_ingredients[k].IconRelpath = baseIngredientsIcons[k] || '';
-                })
-                break;
-              case 'mix_ingredients':
-                Object.keys(table_content).forEach((k)=>{
-                  table.mix_ingredients[k].IconRelpath = mixIngredientsIcons[k] || '';
-                })
-                break;
-              case 'effects':
-                Object.keys(table_content).forEach((k)=>{
-                  table.effects[k].Color = effectsColors[k] || '#000000';
-                })
-                break;
-              default:
-                break;
-            }
-          }
-          UNTable.current = table;
+  const loadUN = async () => {
+    const initUN = await loadUncleNelly();
+    unelly.current = initUN();
+    UNLoader.current = initUN;
+    if (UNTable.current === null) {
+      const res = unelly.current?.get_tables();
+      if (res?.error || res?.response === null || res?.response === undefined) {
+        console.error('Error loading Uncle Nelly tables:', res?.error);
+        return;
+      }
+      const table: UncleNellyTables = res.response as UncleNellyTables;
+      for (const [table_name,table_content] of Object.entries(table)){
+        switch (table_name) {
+          case 'base_ingredients':
+            Object.keys(table_content).forEach((k)=>{
+              table.base_ingredients[k].Icon = baseIngredientsIcons[k];
+            })
+            break;
+          case 'mix_ingredients':
+            Object.keys(table_content).forEach((k)=>{
+              table.mix_ingredients[k].Icon = mixIngredientsIcons[k];
+            })
+            break;
+          case 'effects':
+            Object.keys(table_content).forEach((k)=>{
+              table.effects[k].Color = effectsColors[k];
+            })
+            break;
+          default:
+            break;
         }
-      })
-  },[])
+      }
+      UNTable.current = table;
+    }
+    return true;
+  }
 
   React.useEffect(()=>{
-    loadUN();
-    // Set default app option
-    appContext.setUNellyLoader(UNLoader.current);
-    appContext.setAppOption(AppOptions.cookingSim);
-    appContext.setUncleNelly(unelly.current);
-    appContext.setUNtables(UNTable.current);
+    (async () => {
+      await loadUN();
+      appContext.setUncleNelly(unelly.current);
+      appContext.setUNtables(UNTable.current);
+      appContext.setUNellyLoader(UNLoader.current);
+      appContext.setAppOption(AppOptions.cookingSim); // default
+    })();
   },[])
 
   return <></>

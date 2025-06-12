@@ -1,5 +1,5 @@
 import React from 'react'
-import { type UncleNelly } from './unclenelly'
+import { type UncleNelly } from './unclenelly_types'
 
 // Options
 export const AppOptions = {
@@ -31,7 +31,7 @@ export const useAppContext = () => {
 }
 
 export function AppProvider({children}: {children: React.ReactNode}){
-  const [UNellyLoader, setUNellyLoader] = React.useState<TOrNull< ()=>UncleNelly >>(null);
+  const [UNellyLoader, setUNellyLoader] = React.useState<TOrNull< () => UncleNelly >>(null);
   const [uncleNelly, setUncleNelly] = React.useState<TOrNull< UncleNelly >>(null);
   const [appOption, setAppOption] = React.useState<TOrNull< string >>(null);
   const [UNtables, setUNtables] = React.useState<TOrNull< Record<string,any> >>(null);

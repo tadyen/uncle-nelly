@@ -1,5 +1,64 @@
-// map of icons to their local icon paths
+// base ingredients
+import Blank from "./react.svg";
+import OGKush from "./baseIngredients/OGKush_Icon.png";
+import SourDiesel from "./baseIngredients/SourDiesel_Icon.png";
+import GreenCrack from "./baseIngredients/GreenCrack_Icon.png";
+import GranddaddyPurple from "./baseIngredients/GranddaddyPurple_Icon.png";
+import Meth from "./baseIngredients/Meth_Icon.png";
+import Cocaine from "./baseIngredients/Cocaine_Icon.png";
 
+
+// mix ingredients
+import Addy from "./mixIngredients/Addy_Icon.png";
+import Banana from "./mixIngredients/Banana_Icon.png";
+import Battery from "./mixIngredients/Battery_Icon.png";
+import Chili from "./mixIngredients/Chili_Icon.png";
+import Cuke from "./mixIngredients/Cuke_Icon.png";
+import Donut from "./mixIngredients/Donut_Icon.png";
+import EnergyDrink from "./mixIngredients/Energy_Drink_Icon.png";
+import FluMedicine from "./mixIngredients/Flu_Medicine_Icon.png";
+import Gasoline from "./mixIngredients/Gasoline_Icon.png";
+import HorseSemen from "./mixIngredients/Horse_Semen_Icon.png";
+import Iodine from "./mixIngredients/Iodine_Icon.png";
+import MegaBean from "./mixIngredients/Mega_Bean_Icon.png";
+import MotorOil from "./mixIngredients/Motor_Oil_Icon.png";
+import MouthWash from "./mixIngredients/Mouth_Wash_Icon.png";
+import Paracetamol from "./mixIngredients/Paracetamol_Icon.png";
+import Viagor from "./mixIngredients/Viagor_Icon.png";
+
+// ENSURE keys match those from the go wasm
+
+export const baseIngredientsIcons = {
+    "Blank": Blank,
+    "OG Kush": OGKush,
+    "Sour Diesel": SourDiesel,
+    "Green Crack": GreenCrack,
+    "Granddaddy Purple": GranddaddyPurple,
+    "Meth": Meth,
+    "Cocaine": Cocaine,
+} as {[key: string]: string};
+
+export const mixIngredientsIcons = {
+    "Addy": Addy,
+    "Banana": Banana,
+    "Battery": Battery,
+    "Chili": Chili,
+    "Cuke": Cuke,
+    "Donut": Donut,
+    "Energy Drink": EnergyDrink,
+    "Flu Medicine": FluMedicine,
+    "Gasoline": Gasoline,
+    "Horse Semen": HorseSemen,
+    "Iodine": Iodine,
+    "Mega Bean": MegaBean,
+    "Motor Oil": MotorOil,
+    "Mouth Wash": MouthWash,
+    "Paracetamol": Paracetamol,
+    "Viagor": Viagor,
+} as {[key: string]: string};
+
+// relative path strings instead
+/*
 export const baseIngredientsIcons = {
     "Blank": "assets/react.svg",
     "OGKush": "assets/baseIngredientes/OGKush_Icon.png",
@@ -28,6 +87,7 @@ export const mixIngredientsIcons = {
     "Paracetamol": "assets/mixIngredients/Paracetamol_Icon.png",
     "Viagor": "assets/mixIngredients/Viagor_Icon.png",
 } as {[key: string]: string};
+*/
 
 export const effectsColors = {
     "None": "#FFFFFF",

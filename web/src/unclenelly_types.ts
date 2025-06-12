@@ -44,12 +44,12 @@ export type UncleNellyGetTables = {
 export type UncleNellyTables = UncleNellyGetTables & {
     base_ingredients: {
         [key: string]: {
-            IconRelpath?: string,
+            Icon?: string,
         }
     },
     mix_ingredients: {
         [key: string]: {
-            IconRelpath?: string,
+            Icon?: string,
         }
     },
     effects: {
