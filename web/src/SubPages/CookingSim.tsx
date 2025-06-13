@@ -20,20 +20,18 @@ function Steps(props: StepProps){
   React.useEffect(()=>{
     const _baseIngredients: UncleNellyTables['base_ingredients'] = app.UNtables?.base_ingredients;
     setBaseIngredients(_baseIngredients);
-    console.log(baseIngredients);
   },[app.UNtables])
-
 
   const steps = [
     {
       label: progress > 1 && baseIngredient?.Name
         ? (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-2 mt-2">
             <Icon
               src={baseIngredient.Icon}
               alt={baseIngredient.Name}
             />
-            {baseIngredient.Name}
+            <div>{baseIngredient.Name}</div>
           </div>
         )
         : ( "Select Base" ),
@@ -68,7 +66,7 @@ function Steps(props: StepProps){
 function Icon({ src, alt }: { src?: string; alt: string }){
   const [imgError, setImgError] = React.useState(false);
   return src && !imgError ? (
-    <div className="inline-block w-5 h-5 rounded-full bg-base-200 overflow-hidden">
+    <div className="inline-block w-10 h-10 rounded-full bg-transparent overflow-hidden">
       <img
         src={src}
         alt={alt}
@@ -78,7 +76,7 @@ function Icon({ src, alt }: { src?: string; alt: string }){
     </div>
   ) : (
     // Fallback icon if absolutely no src provided / image err
-    <div className="inline-block w-5 h-5 rounded-full bg-orange-400" />
+    <div className="inline-block w-10 h-10 rounded-full bg-info" />
   );
 }
 
@@ -86,10 +84,8 @@ function Icon({ src, alt }: { src?: string; alt: string }){
 function CookingSim(){
   const app = useAppContext();
 
-  // const baseIngredients: UncleNellyTables['base_ingredients'] = appContext.UNtables?.base_ingredients;
-  // const mixIngredients: UncleNellyTables['mix_ingredients'] = appContext.UNtables?.mix_ingredients;
-  // const effects: UncleNellyTables['effects'] = appContext.UNtables?.effects;
   const [baseIngredients, setBaseIngredients] = React.useState<UncleNellyTables['base_ingredients'] | null>(null);
+  const [mixIngredients, setMixIngredients] = React.useState<UncleNellyTables['mix_ingredients'] | null>(null);
 
   const [progress, setProgress] = React.useState<number>(1);
   const [base, setBase] = React.useState<string>("");
@@ -100,19 +96,17 @@ function CookingSim(){
   const [unelly, setUnelly] = React.useState<UncleNelly|null>(null);
   const [product, setProduct] = React.useState<any|null>(null); // TODO Unelly product type
 
-  const newProduct = async () => {
-    await until(() => app.UNellyLoader != null)
-    const unellyLoader = app.UNellyLoader;
-    if (unellyLoader) {
-      return unellyLoader();
-    }
-    throw new Error("Uncle Nelly Loader is not initialized");
+  const getUN = async () => {
+    await until(() => app.uncleNelly != null);
+    return app.uncleNelly;
   }
     React.useEffect(() => {
       (async () => {
         await until(() => app.UNtables != null);
         const _baseIngredients: UncleNellyTables['base_ingredients'] = app.UNtables?.base_ingredients;
+        const _mixIngredients: UncleNellyTables['mix_ingredients'] = app.UNtables?.mix_ingredients;
         setBaseIngredients(_baseIngredients);
+        setMixIngredients(_mixIngredients);
       })()
     },[])
 
@@ -120,9 +114,8 @@ function CookingSim(){
   // Initialise on mount
   React.useEffect(() => {
     const initUnelly = async () => {
-      const un = await newProduct()
-      setUnelly(un);
-      un.init_job();
+      const unelly = await getUN();
+      setUnelly(unelly);
     }
     initUnelly();
     setProduct(null);
@@ -182,19 +175,14 @@ function CookingSim(){
           <label className="label">Choose a base:</label>
           <select
             className="select select-primary"
+            defaultValue={"Select base"}
             value={base}
             onChange={(e) => setBase(e.target.value)}
             required
           >
-            <option value="">Select base</option>
+            <option value="" disabled={true}>Select base</option>
             {baseIngredients && Object.entries(baseIngredients).map(([k,v]) => (
-              <option key={k} value={k}>
-                <Icon
-                  src={v.Icon}
-                  alt={k}
-                />
-                {k}
-              </option>
+              <option key={k} value={k}>{k}</option>
             ))}
           </select>
           <div className="flex gap-2 mt-4">
@@ -210,6 +198,156 @@ function CookingSim(){
       )}
 
 
+      {/* Step 2: Select Ingredients */}
+      {progress === 2 && (
+        <form
+          className="card bg-base-100 shadow p-6 flex flex-col gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNext();
+          }}
+        >
+          <label className="label">Add ingredients (order matters):</label>
+          <div className="flex gap-2">
+            <select
+              className="select select-accent"
+              value=""
+              onChange={e => {
+                const selected = e.target.value;
+                if (selected) {
+                  setIngredients([...ingredients, selected]);
+                  // Reset select to placeholder after adding
+                  e.target.value = "";
+                }
+              }}
+            >
+              <option value="">Select ingredient</option>
+              {mixIngredients && Object.entries(mixIngredients).map(([k,v]) => (
+                <option key={k} value={k}>{k}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="btn btn-outline btn-error"
+              onClick={() => setIngredients([])}
+              disabled={ingredients.length === 0}
+            >
+              Clear
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2 py-2">
+            {ingredients.map((ing, idx) => (
+              <div
+                key={idx}
+                className={`flex items-center gap-1 cursor-move ${
+                  draggedIdx === idx ? "opacity-50" : ""
+                }`}
+                draggable
+                onDragStart={() => handleDragStart(idx)}
+                onDragOver={e => handleDragOver(e, idx)}
+                onDragEnd={handleDragEnd}
+                onDrop={handleDragEnd}
+              >
+                <span
+                  className={`
+                    inline-flex items-center gap-1
+                    rounded-lg px-3 py-1
+                    border-info bg-secondary text-secondary-content
+                    shadow
+                  `}
+                >
+                  {/* Ingredient icon */}
+                  <Icon
+                    src={mixIngredients ? mixIngredients[ing].Icon : ''}
+                    alt={ing}
+                  />
+                  { mixIngredients ? mixIngredients[ing].Name : '' }
+                  {/* Ingredient label */}
+                  {/* Remove button */}
+                  <button
+                    type="button"
+                    className="btn btn-xs btn-circle btn-ghost ml-1"
+                    onClick={() => handleRemoveIngredient(idx)}
+                    aria-label="Remove"
+                  >
+                    ×
+                  </button>
+                </span>
+                {idx < ingredients.length - 1 && (
+                  <span className="text-xl text-base-content">→</span>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              type="button"
+              className="btn"
+              onClick={handleBack}
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+            >
+              Next
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Step 3: Crack-ulate */}
+      {progress === 3 && (
+        <div className="card bg-base-100 shadow p-6 flex flex-col gap-4">
+          <div className="text-lg font-bold">Ready to crack-ulate?</div>
+          <div>
+            <span className="font-semibold">Base: </span>
+            { baseIngredients && baseIngredients[base].Name }
+          </div>
+          <div>
+            <span className="font-semibold">Ingredients: </span>{" "}
+            { (ingredients.length && mixIngredients)
+              ? ingredients.map((ing) => mixIngredients[ing].Name).join(", ")
+              : "None"
+            }
+          </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              type="button"
+              className="btn"
+              onClick={handleBack}
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleNext}
+            >
+              Crack-ulate!
+            </button>
+          </div>
+        </div>
+      )}
+
+
+      {/* Step 4: Result */}
+      {progress === 4 && (
+        <div className="card bg-base-100 shadow p-6 flex flex-col gap-4">
+          <div className="text-lg font-bold">Result</div>
+          <div className="alert alert-success">{"Result value"}</div>
+          <div className="flex gap-2 mt-4">
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setProgress(1)}
+            >
+              Start Over
+            </button>
+          </div>
+        </div>
+      )}
 
 
     </div>
