@@ -8,7 +8,7 @@ export interface UncleNelly {
     reset_product: () => UncleNellyResult<string|null>
     get_tables: () => UncleNellyResult<object|null>
     set_product_base: (productBase: string) => UncleNellyResult<string|null>
-    cook_with: (ingredients: string[]) => UncleNellyResult<string|null>
+    cook_with: (...ingredients: string[]) => UncleNellyResult<string|null>
     product_info: () => UncleNellyResult<object|null>
     test_func: () => UncleNellyResult<object|null>
 }
