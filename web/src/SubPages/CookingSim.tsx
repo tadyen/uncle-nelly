@@ -42,23 +42,23 @@ function Steps(props: StepProps){
   ];
 
   return (
-    <div className="mx-auto">
-      <ul className="steps">
-        {steps.map((step, idx) => (
-          <li
-            key={idx}
-            className={
-              (progress >= idx + 1 ? "step step-primary" : "step") +
-              " cursor-pointer select-none"
-            }
-            onClick={() => onStepClick(idx + 1)}
-            tabIndex={0}
-            aria-label={`Go to step ${idx + 1}`}
-          >
-            {step.label}
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col items-center w-4xl h-30 mx-auto">
+        <ul className="steps w-full">
+          {steps.map((step, idx) => (
+            <li
+              key={idx}
+              className={
+                (progress >= idx + 1 ? "step step-primary" : "step") +
+                " cursor-pointer select-none"
+              }
+              onClick={() => onStepClick(idx + 1)}
+              tabIndex={0}
+              aria-label={`Go to step ${idx + 1}`}
+            >
+              {step.label}
+            </li>
+          ))}
+        </ul>
     </div>
   );
 }
@@ -160,7 +160,7 @@ function CookingSim(){
 
 
   return(<>
-    <div className="mx-auto flex flex-col gap-8 max-w-xl">
+    <div className="mx-auto flex flex-col gap-8 max-w-4xl">
       <Steps progress={progress} base={base} onStepClick={handleStepClick} />
 
       {/* Step 1: Select Base */}
@@ -212,6 +212,7 @@ function CookingSim(){
             <select
               className="select select-accent"
               value=""
+              defaultValue="Select ingredient"
               onChange={e => {
                 const selected = e.target.value;
                 if (selected) {
@@ -221,7 +222,7 @@ function CookingSim(){
                 }
               }}
             >
-              <option value="">Select ingredient</option>
+              <option value="" disabled={true}>Select ingredient</option>
               {mixIngredients && Object.entries(mixIngredients).map(([k,v]) => (
                 <option key={k} value={k}>{k}</option>
               ))}
