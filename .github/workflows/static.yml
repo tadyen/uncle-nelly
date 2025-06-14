@@ -35,8 +35,12 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: cd into web
-        run: cd ./web
+      - name: test 1
+        run: echo $(pwd) && cd ./web && echo $(pwd)
+      - name: test 2
+        run: echo $GITHUB_WORKSPACE && cd $GITHUB_WORKSPACE && echo $(pwd)
+      - name: pwd
+        run: echo $(pwd)
       - name: Install dependencies
         run: bun install
       - name: Build
