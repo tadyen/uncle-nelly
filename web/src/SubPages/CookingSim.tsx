@@ -102,12 +102,12 @@ function CookingSim(){
 
   const [progress, setProgress] = React.useState<number>(1);
   const [base, setBase] = React.useState<string>("");
-  const [ingredient, setIngredient] = React.useState<string>("");
+  // const [ingredient, setIngredient] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
   const [draggedIdx, setDraggedIdx] = React.useState<number|null>(null);
 
   const [unelly, setUnelly] = React.useState<UncleNelly|null>(null);
-  const [product, setProduct] = React.useState<any|null>(null); // TODO Unelly product type
+  // const [product, setProduct] = React.useState<any|null>(null); // TODO Unelly product type
 
   const baseDropdownRef = React.useRef<HTMLDetailsElement>(null);
 
@@ -133,7 +133,7 @@ function CookingSim(){
       setUnelly(unelly);
     }
     initUnelly();
-    setProduct(null);
+    // setProduct(null);
     setProgress(1);
     setBase("");
     setIngredients([]);
@@ -196,7 +196,7 @@ function CookingSim(){
               ▼▲
               </summary>
             <ul className="menu menu-dropdown dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-              {baseIngredients && Object.entries(baseIngredients).map(([k,v]) => (
+              {baseIngredients && Object.entries(baseIngredients).map(([k,_]) => (
                 <li key={k}>
                   <EntryListItem
                     name={k}
@@ -235,7 +235,7 @@ function CookingSim(){
             <div className="dropdown">
               <div tabIndex={0} role="button" className="btn m-1 w-xl">Select Ingredients (order matters)</div>
               <ul tabIndex={0} className="dropdown-content menu bg-base-100/90 rounded-box z-1 p-2 shadow-sm max-h-64 min-w-2xl overflow-y-auto">
-              {mixIngredients && Object.entries(mixIngredients).map(([k,v]) => (
+              {mixIngredients && Object.entries(mixIngredients).map(([k,_]) => (
                 <li key={k}>
                   <EntryListItem
                     name={k}

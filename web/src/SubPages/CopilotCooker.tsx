@@ -108,7 +108,6 @@ function CopilotCooker() {
   const [base, setBase] = React.useState<string>("");
 
   // Step 2: Ingredients
-  const [ingredient, setIngredient] = React.useState<string>("");
   const [ingredients, setIngredients] = React.useState<string[]>([]);
 
   // Drag state for reordering
@@ -122,7 +121,6 @@ function CopilotCooker() {
     setProgress(1);
     setBase("");
     setIngredients([]);
-    setIngredient("");
     setResult("");
   }, []);
 
@@ -139,13 +137,7 @@ function CopilotCooker() {
   const handleBack = () => setProgress((p) => Math.max(1, p - 1));
 
   // Ingredient add
-  const handleAddIngredient = () => {
-    if (ingredient) {
-      setIngredients([...ingredients, ingredient]);
-      setIngredient("");
-    }
-  };
-  const handleRemoveIngredient = (ing: string, idx: number) => {
+  const handleRemoveIngredient = (idx: number) => {
     setIngredients(ingredients.filter((_, i) => i !== idx));
   };
 
@@ -289,7 +281,7 @@ function CopilotCooker() {
                   <button
                     type="button"
                     className="btn btn-xs btn-circle btn-ghost ml-1"
-                    onClick={() => handleRemoveIngredient(ing, idx)}
+                    onClick={() => handleRemoveIngredient(idx)}
                     aria-label="Remove"
                   >
                     ×

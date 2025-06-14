@@ -69,7 +69,7 @@ func (jsUN *jsUncleNelly) InitJob(this js.Value, args []js.Value) any {
 	var jobName UN.JobName
 	jobOptions := []UN.JobName{UN.CookingSim, UN.ReverseCook, UN.Optimise}
 	jobSelectOk := true
-jobSelect:
+    jobSelect:
 	for _, option := range jobOptions {
 		if args[0].String() == option.String() {
 			jobName = option
@@ -93,6 +93,9 @@ func (jsUN *jsUncleNelly) ResetProduct(this js.Value, args []js.Value) any {
 	if len(args) != 0 {
 		return jsRes(nil, fmt.Errorf("ResetProduct: expected 0 args, got %d", len(args)))
 	}
+    if jsUN.job == nil {
+        return jsRes(nil, errors.New("ResetProduct: job is not initialized"))
+    }
 	newProduct, err := UN.NewProduct("")
 	if err != nil {
 		return jsRes(nil, err)
@@ -117,7 +120,10 @@ func (jsUN *jsUncleNelly) SetProductBase(this js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		return jsRes(nil, fmt.Errorf("SetProductBase: expected 1 arg, got %d", len(args)))
 	}
-	err := jsUN.job.Product.SetBase(args[0].String())
+    if jsUN.job == nil || jsUN.job.Product == nil {
+        return jsRes(nil, errors.New("SetProductBase: job or product is not initialized"))
+    }
+	err := jsUN.job.Product.Initialize(args[0].String())
 	if err != nil {
 		return jsRes(nil, err)
 	}
@@ -125,19 +131,21 @@ func (jsUN *jsUncleNelly) SetProductBase(this js.Value, args []js.Value) any {
 }
 
 func (jsUN *jsUncleNelly) CookWith(this js.Value, args []js.Value) any {
-	if len(args) < 1 {
-		return jsRes(nil, errors.New("CookWith: expected >= 1 arg, got none"))
-	}
+    if jsUN.job == nil || jsUN.job.Product == nil {
+        return jsRes(nil, errors.New("CookWith: job or product is not initialized"))
+    }
 	mix_ingredients := []string{}
-	for _, v := range args {
-		mix_ingredients = append(mix_ingredients, v.String())
-	}
+    if len(args) > 0 {
+        for _, v := range args {
+            mix_ingredients = append(mix_ingredients, v.String())
+        }
+    }
 	cooked, err := UN.Cook(jsUN.job.Product, mix_ingredients)
 	if err != nil {
 		return jsRes(nil, err)
 	}
 	jsUN.job.Product = cooked
-	return jsRes(resOK, nil)
+	return jsRes(flatten(cooked.Status()), nil)
 }
 
 func (jsUN *jsUncleNelly) ProductInfo(this js.Value, args []js.Value) any {

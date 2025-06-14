@@ -3,7 +3,6 @@ import { baseIngredientsIcons, mixIngredientsIcons, effectsColors } from './asse
 import { loadUncleNelly } from './unclenelly'
 import { type UncleNelly, UncleNellyTables } from './unclenelly_types'
 import { AppOptions, useAppContext, AppProvider } from './AppContext'
-import until from './helpers/until'
 
 import './App.css'
 
