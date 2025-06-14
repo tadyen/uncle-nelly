@@ -261,6 +261,8 @@ function CookingSim(){
               Clear
             </button>
           </div>
+
+          {/* TODO: transparent over ingredients sucks UXwise. Figure something better */}
           <div className="flex flex-wrap gap-2 py-2">
             {ingredients.map((ing, idx) => (
               <div
