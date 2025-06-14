@@ -11,5 +11,6 @@ insert_final_newline = true
 [Makefile]
 indent_style = tab
 
-[*.tsx]
+[*.{tsx,yml,yaml}]
 indent_size = 2
+

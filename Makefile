@@ -1,5 +1,6 @@
 build: go-wasm-build bunbuild
 	@echo "Built Go and Bun projects."
+	if ! [ -d ./docs ]; then mkdir ./docs; fi
 	cp -r ./web/dist/* -t ./docs/
 
 bunbuild:
