@@ -1,5 +1,6 @@
 build: go-wasm-build bunbuild
 	@echo "Built Go and Bun projects."
+	cp -r ./web/dist/* -t ./docs/
 
 bunbuild:
 	@echo "Makefile: building bun project..."
