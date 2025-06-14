@@ -26,7 +26,7 @@ export type UncleNellyGetTables = {
     effects: {
         [key: string]: {
             Name: string,
-            Multpler: number,
+            Multiplier: number,
             Conversion: {
                 [key: string]: string
             }[]

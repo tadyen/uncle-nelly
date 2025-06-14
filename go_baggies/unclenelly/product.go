@@ -57,6 +57,7 @@ type SafeProduct struct {
     Base        BaseIngredientRef
     Multiplier  float64
     Price       int32
+    Cost        int32
     MixQueue    []MixIngredientName
     MixHistory  []MixIngredientRef
     Effects     [ProductMaxEffects]StatefulEffect
@@ -67,6 +68,7 @@ type ProductStatus struct {
     Base        string
     Multiplier  float64
     Price       int32
+    Cost        int32
     MixQueue    []string
     MixHistory  []string
     Effects     []string
@@ -94,6 +96,9 @@ func (p *Product) Multiplier() float64{
 func (p *Product) Price() int32{
     return p.SafeProduct.Price
 }
+func (p *Product) Cost() int32{
+    return p.SafeProduct.Cost
+}
 func (p *Product) MixQueue() []string{
     mixQueue := make([]string, len(p.SafeProduct.MixQueue))
     for i, ingredient := range p.SafeProduct.MixQueue {
@@ -120,6 +125,7 @@ func (p *Product) Status() ProductStatus{
         Base:       p.Base(),
         Multiplier: p.Multiplier(),
         Price:      p.Price(),
+        Cost:       p.Cost(),
         MixQueue:   p.MixQueue(),
         MixHistory: p.MixHistory(),
         Effects:    p.Effects(),
@@ -140,7 +146,7 @@ func (p *Product) SetMixQueue(ingredients []string) error {
         if !MixIngredientName(ingredient).Valid() {
             return fmt.Errorf("Mix ingredient %s not valid", ingredient)
         }
-        safeIngredients[i] = MixIngredientName(ingredient) 
+        safeIngredients[i] = MixIngredientName(ingredient)
     }
     p.SafeProduct.MixQueue = safeIngredients
     return nil
@@ -195,6 +201,7 @@ func (p *SafeProduct) Initialize(baseIngredient BaseIngredientRef) error {
     p.Base = baseIngredient
     p.Multiplier = 1.0
     p.Price = baseIngredient.Lookup().Price
+    p.Cost = 0
     p.MixQueue = []MixIngredientName{}
     p.MixHistory = []MixIngredientRef{}
     for i := range len(p.Effects){
@@ -250,13 +257,13 @@ func (p *SafeProduct) AddEffect(newEffect EffectName){
 
 // Mixing mechanics:
 //      Mutate all effefcts with the next ingredient. Prevent/avoid duplicates. Add new effect without duplicating it.
-// Special case: 
-//      If an effect were to mutates to an already existing effect, and that existing effect does not mutate, 
+// Special case:
+//      If an effect were to mutates to an already existing effect, and that existing effect does not mutate,
 //      the former should not be mutated. If the latter mutates, then the former is allowed to mutate too
 //      Unknown behaviour: 2 effects mutating into the same effect. However no such example exists in the table.
 func (p *Product) MixNext(){
     p.SafeProduct.MixNext()
-}   
+}
 func (p *SafeProduct) MixNext() {
     if len(p.MixQueue) == 0 {
         return
@@ -268,7 +275,7 @@ func (p *SafeProduct) MixNext() {
     for i := range p.Effects {
         p.Effects[i].MutateWith(nextEffectName)
     }
-    // Revert effects that are blocked. 
+    // Revert effects that are blocked.
     // 1. Find duplicates of post-mutation.
     indexes := make(map[EffectName][]int)
     for i, e := range p.Effects {
@@ -310,9 +317,9 @@ func (p *Product) UpdateMultiplier(){
 }
 func (p *SafeProduct) UpdateMultiplier(){
     p.Multiplier = float64(1.0)
-    for _, e := range p.Effects {
-        if e.Current.Name != NoEffect {
-            p.Multiplier += e.Current.Lookup().Multiplier
+    for _, e := range p.EffectSet() {
+        if e.Name != NoEffect {
+            p.Multiplier += e.Lookup().Multiplier
         }
     }
     return
@@ -327,4 +334,12 @@ func (p *SafeProduct) UpdatePrice(){
     p.Price = int32( math.Round(float64(basePrice) * p.Multiplier) )
 }
 
-
+func (p *Product) UpdateCost(){
+    p.SafeProduct.UpdateCost()
+}
+func (p *SafeProduct) UpdateCost(){
+    p.Cost = 0
+    for _, v := range p.MixHistory {
+        p.Cost += v.Lookup().Price
+    }
+}

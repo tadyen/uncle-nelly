@@ -17,5 +17,6 @@ func Cook(product *Product, mixIngredients []string) (*Product, error){
     product.MixAll()
     product.UpdateMultiplier()
     product.UpdatePrice()
+    product.UpdateCost()
     return product, nil
 }

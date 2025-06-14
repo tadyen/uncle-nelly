@@ -205,6 +205,20 @@ func TestBatonMix(t *testing.T) {
     mixingTest(t, &productList)
 }
 
+func TestSpamMix(t *testing.T) {
+    var productList = []testProduct{
+        {
+            BaseIngredient: "OG Kush",
+            MixQueue: []string{"Banana", "Banana", "Banana", "Banana", "Banana", "Banana", "Banana", "Banana", "Banana"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Sneaky", "Gingeritis"},
+                Price: 50,
+            },
+        },
+    }
+    mixingTest(t, &productList)
+}
+
 func TestBlockingMix(t *testing.T) {
     // {Sedating + Munchies} + Athletic -> {Munchies + Sedating + Athletic}
     // Sedating should've become Munchies, but because Munchies does not mutate, it blocks Sedating from mutating
