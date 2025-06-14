@@ -90,7 +90,7 @@ function App() {
         <div className="min-h-[10vh]">
         <Navbar />
       </div>
-      <div className="flex min-h-[80vh] border border-red-500">
+      <div className="flex min-h-[80vh]">
         <AppSelector />
       </div>
       <div className="min-h-[10vh]">
