@@ -116,7 +116,7 @@ export const effectsColors = {
     "Schizophrenic": "#0000a0",
     "Sedating": "#8b5ada",
     "Shrinking": "#6cc9e0",
-    "Siezure-Inducing": "#FFBF00",
+    "Seizure-Inducing": "#FFBF00",
     "Slippery": "#7edad5",
     "Smelly": "#368b3b",
     "Sneaky": "#a3a3a3",

@@ -46,7 +46,6 @@ func NewUncleNelly(this js.Value, args []js.Value) any {
 		"set_product_base": js.FuncOf(jsUN.SetProductBase),
 		"cook_with":        js.FuncOf(jsUN.CookWith),
 		"product_info":     js.FuncOf(jsUN.ProductInfo),
-        "test_func":        js.FuncOf(jsUN.TestFunc),
 	})
 }
 
@@ -156,27 +155,6 @@ func (jsUN *jsUncleNelly) ProductInfo(this js.Value, args []js.Value) any {
         return jsRes(nil, errors.New("ProductInfo: job or product is not initialized"))
     }
     return jsRes(flatten(jsUN.job.Product.Status()), nil)
-}
-
-// Development only to test if js binding can spit out a payload
-func (jsUN *jsUncleNelly) TestFunc(this js.Value, args []js.Value) any {
-    if len(args) != 0 {
-        return jsRes(nil, fmt.Errorf("TestFunc: expected 0 args, got %d", len(args)))
-    }
-    payload := map[string]any{
-        "asdstr": "123",
-        "qwenum": 123,
-        "qwebool": true,
-        "qwemap": map[string]any{
-            "key1": "value1",
-            "key2": 123,
-            "key3": true,
-        },
-        "qwearr": []any{
-            1,2,3,
-        },
-    }
-    return jsRes(flatten(payload), nil)
 }
 
 func main() {

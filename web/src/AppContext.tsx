@@ -6,7 +6,6 @@ export const AppOptions = {
   cookingSim: "cookingSim",
   recipeReverse: "recipeReverse",
   recipeOptimiser: "recipeOptimiser",
-  copilotCooker: "copilotCooker",
 }
 
 type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>
