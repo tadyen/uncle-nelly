@@ -22,7 +22,7 @@ type EffectsYAML map[string]struct{
     Conversion []map[string]string `yaml:"Conversion"`
 }
 type Effect struct {
-    Name string 
+    Name string
     Multiplier float64
     Conversion []map[string]string
 }
@@ -76,7 +76,7 @@ var EffectsRawYAML = `
 #   Multiplier: <number>
 #   Conversion:
 #     - <mixed with>: <result>
-None: 
+None:
   Multiplier: 0.00
   Conversion: []
 Energizing:
@@ -97,12 +97,12 @@ Sneaky:
   Multiplier: 0.24
   Conversion:
     - Energizing: Paranoia
-    - Toxic:      "Tropic Thunder" 
+    - Toxic:      "Tropic Thunder"
     - Foggy:      Calming
     - Spicy:      Bright-Eyed
 Calorie-Dense:
   Multiplier: 0.28
-  Conversion: 
+  Conversion:
     - Calorie-Dense:  Explosive
     - Balding:        Sneaky
     - Jennerising:    Gingeritis
@@ -162,7 +162,7 @@ Jennerising:
     - Toxic:          Sneaky
     - Foggy:          Paranoia
 Thought-Provoking:
-  Multiplier: 0.44 
+  Multiplier: 0.44
   Conversion:
     - Sedating:     Gingeritis
     - Foggy:        Energizing
@@ -215,7 +215,7 @@ Paranoia:
     - Toxic:      Calming
     - Slippery:   Anti-gravity
 Anti-gravity:
-  Multiplier: 0.54 
+  Multiplier: 0.54
   Conversion:
     - Calorie-Dense:  Slippery
     - Spicy:          "Tropic Thunder"
@@ -253,9 +253,9 @@ Schizophrenic:
   Conversion:
     - Athletic: Balding
 Zombifying:
-  Multiplier: 0.58 
+  Multiplier: 0.58
   Conversion: []
-Siezure-Inducing:
+Seizure-Inducing:
   Multiplier: 0.00
   Conversion:
     - Foggy:        Focused
