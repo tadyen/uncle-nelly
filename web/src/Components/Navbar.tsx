@@ -21,10 +21,6 @@ export default function Navbar(){
       name: "Optimiser (tbd)",
       onClick: ()=>{setActiveTab(2), appContext.setAppOption(AppOptions.recipeOptimiser)},
     },
-    "3": {
-      name: "Copilot Cooker",
-      onClick: ()=>{setActiveTab(3), appContext.setAppOption(AppOptions.copilotCooker)},
-    },
   }
 
   return (<>
