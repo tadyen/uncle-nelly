@@ -241,13 +241,15 @@ func (p *Product) AddEffect(newEffect string) error {
     return nil
 }
 func (p *SafeProduct) AddEffect(newEffect EffectName){
+    for _, e := range p.Effects {
+        // avoid duplicating
+        if e.Current.Name == newEffect{
+            return
+        }
+    }
+    // find empty slot
     for i, e := range p.Effects {
-        // find empty slot
         if e.Current.Name == NoEffect {
-            // avoid duplicating
-            if e.Current.Name == newEffect{
-                break
-            }
             p.Effects[i].SetCurrentEffect(newEffect)
             break
         }
