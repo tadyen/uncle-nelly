@@ -215,6 +215,22 @@ func TestSpamMix(t *testing.T) {
                 Price: 50,
             },
         },
+        {   // Expected
+            BaseIngredient: "OG Kush",
+            MixQueue: []string{"Chili", "Energy Drink"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Euphoric", "Athletic",},
+                Price: 56,
+            },
+        },
+        {   // Expected no change
+            BaseIngredient: "OG Kush",
+            MixQueue: []string{"Chili", "Chili", "Energy Drink"},
+            ExpectedResults: expectedResult{
+                Effects: []string{"Calming", "Euphoric", "Athletic",},
+                Price: 56,
+            },
+        },
     }
     mixingTest(t, &productList)
 }
